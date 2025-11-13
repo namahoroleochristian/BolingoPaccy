@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import albumCover from "@/assets/album-cover.jpg";
+import albumCover from "@/assets/AlbumCover.jpeg";
 import { Play, Music } from "lucide-react";
 
 const Album = () => {
@@ -50,7 +50,7 @@ const Album = () => {
             </p>
 
             <div className="flex gap-4 pt-4">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 gap-2">
+              <Button size="lg" className="bg-[#895B26] hover:bg-primary/90 gap-2">
                 <Play className="h-5 w-5" />
                 Play Album
               </Button>

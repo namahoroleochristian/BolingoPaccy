@@ -19,7 +19,7 @@ const Navigation = () => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-24 bg-sidebar flex-col items-center justify-between py-8 z-50">
+      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-24 bg-black flex-col items-center justify-between py-8 z-50">
         <Link to="/" className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
           BP
         </Link>
@@ -46,7 +46,7 @@ const Navigation = () => {
       </aside>
 
       {/* Top Navigation */}
-      <nav className="fixed top-0 left-0 lg:left-24 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+      <nav className="fixed top-0 left-0 lg:left-24 right-0 z-40 bg-transparent backdrop-blur-sm pt-4">
         <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
           {/* Mobile Logo */}
           <Link to="/" className="lg:hidden text-xl font-bold text-foreground">
@@ -61,7 +61,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden bg-transparent lg:flex items-center gap-8">
             {navItems.slice(1).map((item) => (
               <Link
                 key={item.path}
@@ -88,7 +88,7 @@ const Navigation = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-card border-t border-border animate-fade-in">
+          <div className="lg:hidden bg-card  animate-fade-in">
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
               {navItems.map((item) => (
                 <Link

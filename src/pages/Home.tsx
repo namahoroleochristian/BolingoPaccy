@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import albumCover from "@/assets/album-cover.jpg";
+import albumCover from "@/assets/AlbumCover.jpeg";
 
 const Home = () => {
   return (
@@ -14,11 +14,8 @@ const Home = () => {
               </div>
               
               <div className="relative bg-card rounded-lg overflow-hidden shadow-2xl">
-                <div className="p-6 lg:p-8 bg-black">
-                  <div className="text-center mb-6">
-                    <h3 className="text-3xl lg:text-4xl font-bold tracking-wider mb-2 text-white">UMUCANCURO</h3>
-                    <p className="text-sm tracking-[0.3em] text-white/80">BOLINGOPACCY</p>
-                  </div>
+                <div className="p-6 lg:p-8 bg-[black]">
+                 
                   
                   <img
                     src={albumCover}
@@ -33,7 +30,7 @@ const Home = () => {
           {/* Album Info */}
           <div className="animate-fade-in space-y-6 lg:space-y-8">
             <h1 className="text-4xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-foreground">
-              INYENYERI ALBUM
+              UMUCANCURO ALBUM
             </h1>
             
             <p className="text-base lg:text-lg text-muted-foreground leading-relaxed max-w-xl">
@@ -44,7 +41,7 @@ const Home = () => {
 
             <Button 
               size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition-all hover:scale-105"
+              className="bg-[#895B26] hover:bg-[#895B26] text-primary-foreground px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition duration-300 hover:scale-105"
             >
               BUY NOW
             </Button>
