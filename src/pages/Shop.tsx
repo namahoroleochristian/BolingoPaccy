@@ -1,38 +1,37 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-
-interface Product {
-  id: string;
-  title: string;
-  price: number;
-  type: string;
-  thumbnail_path?: string;
-}
 
 const Shop = () => {
-  const navigate = useNavigate();
-  const { data: products, isLoading } = useQuery({
-    queryKey: ['shop-media'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('media').select('*');
-      if (error) throw error;
-      return data as Product[];
+  const products = [
+    {
+      id: 1,
+      name: "Inyenyeri Album - Digital",
+      price: "$9.99",
+      description: "High-quality digital download",
+      image: "https://images.unsplash.com/photo-1619983081593-e2ba5b543168?w=400",
     },
-  });
-
-  const addToCart = (product: Product) => {
-    const currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const updatedCart = [...currentCart, { id: product.id, title: product.title, price: product.price }];
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-    toast.success(`${product.title} added to cart`);
-    navigate('/checkout');
-  };
-
-  if (isLoading) return <div className="container mx-auto px-4 py-12">Loading shop...</div>;
+    {
+      id: 2,
+      name: "Inyenyeri Album - Vinyl",
+      price: "$34.99",
+      description: "Limited edition vinyl record",
+      image: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=400",
+    },
+    {
+      id: 3,
+      name: "Concert T-Shirt",
+      price: "$24.99",
+      description: "Official tour merchandise",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
+    },
+    {
+      id: 4,
+      name: "Signed Poster",
+      price: "$19.99",
+      description: "Autographed album artwork",
+      image: "https://images.unsplash.com/photo-1611329532992-0b18c469ff5a?w=400",
+    },
+  ];
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
@@ -43,37 +42,30 @@ const Shop = () => {
         </p>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products?.map((product, index) => (
+          {products.map((product, index) => (
             <Card
               key={product.id}
               className="bg-card border-border overflow-hidden group animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="aspect-square overflow-hidden bg-muted flex items-center justify-center">
-                {product.thumbnail_path ? (
-                  <img
-                    src={product.thumbnail_path}
-                    alt={product.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                ) : (
-                  <span className="text-muted-foreground capitalize">{product.type}</span>
-                )}
+              <div className="aspect-square overflow-hidden">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
               </div>
               
               <div className="p-4 space-y-3">
                 <div>
-                  <h3 className="font-semibold text-lg mb-1">{product.title}</h3>
-                  <p className="text-sm text-muted-foreground">High-quality digital {product.type}</p>
+                  <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+                  <p className="text-sm text-muted-foreground">{product.description}</p>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-xl font-bold text-primary">${product.price}</span>
-                  <Button
-                    className="bg-primary hover:bg-primary/90"
-                    onClick={() => addToCart(product)}
-                  >
-                    Buy Now
+                  <span className="text-xl font-bold text-primary">{product.price}</span>
+                  <Button className="bg-primary hover:bg-primary/90">
+                    Add to Cart
                   </Button>
                 </div>
               </div>
