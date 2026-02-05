@@ -8,6 +8,11 @@ import Songs from "./pages/Songs";
 import Shop from "./pages/Shop";
 import Album from "./pages/Album";
 import Tour from "./pages/Tour";
+import Admin from "./pages/Admin";
+import Dashboard from "./pages/Dashboard";
+import Checkout from "./pages/Checkout";
+import Success from "./pages/Success";
+import Player from "./pages/Player";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 
@@ -25,6 +30,14 @@ const App = () => (
           <Route path="/shop" element={<Layout><Shop /></Layout>} />
           <Route path="/album" element={<Layout><Album /></Layout>} />
           <Route path="/tour" element={<Layout><Tour /></Layout>} />
+
+          {/* New Dynamic Routes */}
+          <Route path="/admin" element={<Layout><Admin /></Layout>} />
+          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/checkout" element={<Layout><Checkout /></Layout>} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/player/:id" element={<Player />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
