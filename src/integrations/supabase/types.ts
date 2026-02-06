@@ -14,16 +14,281 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      albums: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          price: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          price: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          price?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          album_id: string
+          amount: number
+          callback_url: string | null
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_first_name: string | null
+          customer_last_name: string | null
+          id: string
+          merchant_reference: string
+          notification_id: string | null
+          pesapal_tracking_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          album_id: string
+          amount: number
+          callback_url?: string | null
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_first_name?: string | null
+          customer_last_name?: string | null
+          id?: string
+          merchant_reference: string
+          notification_id?: string | null
+          pesapal_tracking_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          album_id?: string
+          amount?: number
+          callback_url?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_first_name?: string | null
+          customer_last_name?: string | null
+          id?: string
+          merchant_reference?: string
+          notification_id?: string | null
+          pesapal_tracking_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number | null
+          confirmed_at: string
+          currency: string | null
+          id: string
+          order_id: string
+          payment_method: string | null
+          payment_status: string
+          pesapal_transaction_id: string | null
+          raw_response: Json | null
+        }
+        Insert: {
+          amount?: number | null
+          confirmed_at?: string
+          currency?: string | null
+          id?: string
+          order_id: string
+          payment_method?: string | null
+          payment_status: string
+          pesapal_transaction_id?: string | null
+          raw_response?: Json | null
+        }
+        Update: {
+          amount?: number | null
+          confirmed_at?: string
+          currency?: string | null
+          id?: string
+          order_id?: string
+          payment_method?: string | null
+          payment_status?: string
+          pesapal_transaction_id?: string | null
+          raw_response?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pesapal_config: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      songs: {
+        Row: {
+          album_id: string
+          audio_url: string | null
+          created_at: string
+          duration: string | null
+          id: string
+          is_preview: boolean
+          title: string
+          track_number: number
+        }
+        Insert: {
+          album_id: string
+          audio_url?: string | null
+          created_at?: string
+          duration?: string | null
+          id?: string
+          is_preview?: boolean
+          title: string
+          track_number: number
+        }
+        Update: {
+          album_id?: string
+          audio_url?: string | null
+          created_at?: string
+          duration?: string | null
+          id?: string
+          is_preview?: boolean
+          title?: string
+          track_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "songs_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_purchased_album: {
+        Args: { _album_id: string; _user_id: string }
+        Returns: boolean
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      order_status: "pending" | "completed" | "failed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +415,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      order_status: ["pending", "completed", "failed", "cancelled"],
+    },
   },
 } as const
