@@ -1,7 +1,44 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 import albumCover from "@/assets/AlbumCover.jpeg";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+
+interface Album {
+  id: string;
+  title: string;
+  price: number;
+  currency: string;
+}
 
 const Home = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [album, setAlbum] = useState<Album | null>(null);
+
+  useEffect(() => {
+    const fetchAlbum = async () => {
+      const { data } = await supabase
+        .from("albums")
+        .select("id, title, price, currency")
+        .eq("is_active", true)
+        .limit(1)
+        .maybeSingle();
+      
+      setAlbum(data);
+    };
+    fetchAlbum();
+  }, []);
+
+  const handleBuyNow = () => {
+    if (album) {
+      navigate(`/checkout?album=${album.id}`);
+    } else {
+      navigate("/album");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 lg:px-8 py-12">
       <div className="container mx-auto">
@@ -15,8 +52,6 @@ const Home = () => {
               
               <div className="relative bg-card rounded-lg overflow-hidden shadow-2xl">
                 <div className="p-6 lg:p-8 bg-[black]">
-                 
-                  
                   <img
                     src={albumCover}
                     alt="Umucancuro Album Cover"
@@ -39,12 +74,32 @@ const Home = () => {
               and contemporary soundscapes.
             </p>
 
-            <Button 
-              size="lg"
-              className="bg-[#895B26] hover:bg-[#895B26] text-primary-foreground px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition duration-300 hover:scale-105"
-            >
-              BUY NOW
-            </Button>
+            {album && (
+              <p className="text-2xl font-bold text-[#895B26]">
+                {album.currency} {album.price.toFixed(2)}
+              </p>
+            )}
+
+            <div className="flex flex-wrap gap-4">
+              <Button 
+                size="lg"
+                className="bg-[#895B26] hover:bg-[#895B26]/90 text-primary-foreground px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition duration-300 hover:scale-105"
+                onClick={handleBuyNow}
+              >
+                BUY NOW
+              </Button>
+              
+              {!user && (
+                <Button 
+                  size="lg"
+                  variant="outline"
+                  className="px-8 py-6 text-base lg:text-lg"
+                  onClick={() => navigate("/auth")}
+                >
+                  Sign In
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>

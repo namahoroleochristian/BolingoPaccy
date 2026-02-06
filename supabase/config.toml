@@ -1,1 +1,16 @@
 project_id = "ikjubsrcdhdrnmkiycta"
+
+[functions.pesapal-auth]
+verify_jwt = false
+
+[functions.register-ipn]
+verify_jwt = false
+
+[functions.create-order]
+verify_jwt = false
+
+[functions.pesapal-ipn-handler]
+verify_jwt = false
+
+[functions.verify-transaction]
+verify_jwt = false
