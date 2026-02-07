@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Navigation = () => {
   const location = useLocation();
@@ -9,8 +10,8 @@ const Navigation = () => {
   const navItems = [
     { path: "/", label: "Home" },
     { path: "/songs", label: "Songs" },
-    { path: "/shop", label: "Shop" },
-    { path: "/album", label: "Album" },
+    { path: "/images", label: "Gallery" },
+    { path: "/album", label: "Albums" },
     { path: "/tour", label: "Tour" },
   ];
 
@@ -19,7 +20,7 @@ const Navigation = () => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-24 bg-black flex-col items-center justify-between py-8 z-50">
+      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-24 bg-card border-r border-border flex-col items-center justify-between py-8 z-50">
         <Link to="/" className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
           BP
         </Link>
@@ -33,20 +34,23 @@ const Navigation = () => {
           </Link>
         </div>
 
-        <div className="flex flex-col gap-4">
-          {[0, 1, 2, 3].map((index) => (
-            <div
-              key={index}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === 0 ? "bg-primary" : "bg-muted"
-              }`}
-            />
-          ))}
+        <div className="flex flex-col gap-4 items-center">
+          <ThemeToggle />
+          <div className="flex flex-col gap-2">
+            {[0, 1, 2, 3].map((index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === 0 ? "bg-primary" : "bg-muted-foreground/30"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </aside>
 
       {/* Top Navigation */}
-      <nav className="fixed top-0 left-0 lg:left-24 right-0 z-40 bg-transparent backdrop-blur-sm pt-4">
+      <nav className="fixed top-0 left-0 lg:left-24 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
           {/* Mobile Logo */}
           <Link to="/" className="lg:hidden text-xl font-bold text-foreground">
@@ -55,21 +59,21 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8 ml-8">
-            <Link to="/" className="text-foreground/70 hover:text-primary transition-colors tracking-wide">
+            <Link to="/" className="text-muted-foreground hover:text-primary transition-colors tracking-wide font-medium">
               BOLINGO Paccy
             </Link>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden bg-transparent lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8">
             {navItems.slice(1).map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm uppercase tracking-wider transition-colors ${
+                className={`text-sm uppercase tracking-wider font-medium transition-colors ${
                   isActive(item.path)
                     ? "text-primary"
-                    : "text-foreground hover:text-primary"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {item.label}
@@ -77,28 +81,31 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Controls */}
+          <div className="lg:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              className="text-foreground p-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-card  animate-fade-in">
+          <div className="lg:hidden bg-card border-t border-border animate-fade-in">
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-sm uppercase tracking-wider transition-colors ${
+                  className={`text-sm uppercase tracking-wider font-medium transition-colors py-2 ${
                     isActive(item.path)
                       ? "text-primary"
-                      : "text-foreground hover:text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {item.label}
