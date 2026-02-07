@@ -1,16 +1,34 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Songs = () => {
-  const songs = [
-    { id: 1, title: "Inyenyeri", duration: "4:32", featured: true },
-    { id: 2, title: "Umucancuro", duration: "3:45", featured: false },
-    { id: 3, title: "Inzozi", duration: "5:12", featured: false },
-    { id: 4, title: "Urukundo", duration: "4:18", featured: false },
-    { id: 5, title: "Ubumuntu", duration: "3:56", featured: false },
-    { id: 6, title: "Amahoro", duration: "4:43", featured: false },
-  ];
+  const [songs,setSongs] =useState([]);
+  useEffect(()=>{
+    const fetchSongs = async () => {
+      try {
+       const { data: songsData } = await supabase
+        .from("songs")
+        .select("*")
+        // .eq("album_id", albumData.id)
+        .order("track_number");
+        setSongs(songsData || []);
+      } catch (error) {
+        console.error("Error fetching songs:", error);
+      } 
+    };
+    fetchSongs();
+  },[songs])
+  // const songs = [
+  //   { id: 1, title: "Inyenyeri", duration: "4:32", featured: true },
+  //   { id: 2, title: "Umucancuro", duration: "3:45", featured: false },
+  //   { id: 3, title: "Inzozi", duration: "5:12", featured: false },
+  //   { id: 4, title: "Urukundo", duration: "4:18", featured: false },
+  //   { id: 5, title: "Ubumuntu", duration: "3:56", featured: false },
+  //   { id: 6, title: "Amahoro", duration: "4:43", featured: false },
+  // ];
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
