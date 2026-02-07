@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import albumCover from "@/assets/AlbumCover.jpeg";
-import { Play, Music, ShoppingCart, Lock, Unlock } from "lucide-react";
+import { Play, Music, ShoppingCart, Lock, Unlock, Pause } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -23,6 +23,7 @@ interface Song {
   track_number: number;
   duration: string | null;
   is_preview: boolean;
+  audio_url?: string | null;
 }
 
 const Album = () => {
@@ -30,7 +31,7 @@ const Album = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [hasPurchased, setHasPurchased] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -69,29 +70,76 @@ const Album = () => {
 
       // Check purchase status if logged in
       if (user) {
-        const { data: purchaseData } = await supabase
+        const { data: purchaseData, error: purchaseError } = await supabase
           .from("orders")
           .select("id, status")
-          .eq("user_id", user.id)
+          .eq("customer_email", user.email)
           .eq("album_id", albumData.id)
           .eq("status", "completed")
           .maybeSingle();
 
-        setHasPurchased(!!purchaseData);
+        if (purchaseError) {
+          console.error("Error checking purchase status:", purchaseError);
+        }
+
+        const purchased = !!purchaseData;
+        setHasPurchased(purchased);
+        console.log("Purchase status for user:", user.email, "- Purchased:", purchased);
+        
+        if (purchased) {
+          toast({
+            title: "Album Owned",
+            description: "You can play all tracks from this album!",
+            duration: 3000,
+          });
+        }
+      } else {
+        setHasPurchased(false);
       }
 
       setLoading(false);
     };
 
     fetchAlbumData();
-  }, [user]);
+  }, [user, toast]);
+
+  // Re-check purchase status when user changes
+  useEffect(() => {
+    if (user && album) {
+      const checkPurchase = async () => {
+        const { data: purchaseData } = await supabase
+          .from("orders")
+          .select("id, status")
+          .eq("customer_email", user.email)
+          .eq("album_id", album.id)
+          .eq("status", "completed")
+          .maybeSingle();
+
+        setHasPurchased(!!purchaseData);
+      };
+
+      checkPurchase();
+    }
+  }, [user, album]);
 
   const handleBuyNow = () => {
     if (!album) return;
+    
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to purchase this album.",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
     navigate(`/checkout?album=${album.id}`);
   };
 
   const handlePlayTrack = (song: Song) => {
+    // If user hasn't purchased and it's not a preview, block playback
     if (!hasPurchased && !song.is_preview) {
       toast({
         title: "Purchase Required",
@@ -100,134 +148,196 @@ const Album = () => {
       });
       return;
     }
-    
-    toast({
-      title: "Now Playing",
-      description: song.title,
-    });
+
+    // Toggle play/pause for the same track
+    if (currentlyPlaying === song.id) {
+      setCurrentlyPlaying(null);
+      toast({
+        title: "Paused",
+        description: song.title,
+      });
+    } else {
+      setCurrentlyPlaying(song.id);
+      toast({
+        title: "Now Playing",
+        description: `${song.title}${hasPurchased ? ' (Full Version)' : ' (Preview)'}`,
+      });
+      
+      // Here you would integrate with an actual audio player
+      // For example, if you have an audio_url in your song data:
+      if (song.audio_url) {
+        console.log("Playing audio from:", song.audio_url);
+        // Implement actual audio playback here
+      }
+    }
   };
 
-  // Fallback tracks for display if no songs in database
-  const displayTracks = songs.length > 0 ? songs : [
-    { id: "1", track_number: 1, title: "Inyenyeri", duration: "4:32", is_preview: true },
-    { id: "2", track_number: 2, title: "Umucancuro", duration: "3:45", is_preview: false },
-    { id: "3", track_number: 3, title: "Inzozi", duration: "5:12", is_preview: false },
-    { id: "4", track_number: 4, title: "Urukundo", duration: "4:18", is_preview: false },
-    { id: "5", track_number: 5, title: "Ubumuntu", duration: "3:56", is_preview: false },
-    { id: "6", track_number: 6, title: "Amahoro", duration: "4:43", is_preview: false },
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-amber-900">
+        <div className="text-amber-100 text-xl">Loading album...</div>
+      </div>
+    );
+  }
 
-  const displayAlbum = album || {
-    id: "default",
-    title: "Inyenyeri",
-    description: "Inyenyeri (The Stars) is a masterful blend of traditional African rhythms and contemporary soundscapes. Each track tells a story of heritage, love, and the human experience, woven together with the distinctive sound of the umucancuro instrument.",
-    price: 500,
-    currency: "KES",
-    cover_url: null,
-  };
+  if (!album) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-amber-900">
+        <div className="text-amber-100 text-xl">No album available</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
-      <div className="max-w-5xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-amber-900 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Album Cover */}
-          <div className="animate-slide-in">
-            <Card className="bg-card border-border overflow-hidden">
-              <img
-                src={displayAlbum.cover_url || albumCover}
-                alt={displayAlbum.title}
-                className="w-full h-auto"
-              />
-            </Card>
-          </div>
+          <Card className="overflow-hidden bg-white/10 backdrop-blur-lg border-white/20">
+            <img
+              src={album.cover_url || albumCover}
+              alt={album.title}
+              className="w-full aspect-square object-cover"
+            />
+          </Card>
 
           {/* Album Info */}
-          <div className="space-y-6 animate-fade-in">
+          <div className="text-white space-y-6">
             <div>
-              <p className="text-primary text-sm uppercase tracking-wider mb-2">Album</p>
-              <h1 className="text-5xl lg:text-6xl font-bold mb-4">{displayAlbum.title}</h1>
-              <p className="text-xl text-muted-foreground">by Bolingo Paccy</p>
+              <p className="text-sm uppercase tracking-wider text-amber-400 mb-2">
+                Album
+              </p>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                {album.title}
+              </h1>
+              <p className="text-lg text-amber-200">by Bolingo Paccy</p>
             </div>
 
-            <div className="space-y-2 text-muted-foreground">
-              <p><span className="text-foreground font-semibold">Released:</span> 2024</p>
-              <p><span className="text-foreground font-semibold">Genre:</span> Afro-fusion, Traditional</p>
-              <p><span className="text-foreground font-semibold">Duration:</span> 26:26</p>
-              <p className="text-2xl font-bold text-[#895B26]">
-                {displayAlbum.currency} {displayAlbum.price.toFixed(2)}
+            <div className="space-y-2 text-sm text-gray-300">
+              <p>Released: 2024</p>
+              <p>Genre: Afro-fusion, Traditional</p>
+              <p>Duration: 26:26</p>
+              <p className="text-2xl font-bold text-white mt-4">
+                {album.currency} {album.price.toFixed(2)}
               </p>
             </div>
 
-            <p className="text-muted-foreground leading-relaxed">
-              {displayAlbum.description}
-            </p>
+            <p className="text-gray-300 leading-relaxed">{album.description}</p>
 
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-4">
               {hasPurchased ? (
-                <Button size="lg" className="bg-green-600 hover:bg-green-700 gap-2">
-                  <Unlock className="h-5 w-5" />
+                <Button
+                  className="flex-1 bg-amber-600 hover:bg-amber-700 text-black font-semibold"
+                  disabled
+                >
+                  <Unlock className="mr-2 h-5 w-5" />
                   Album Owned
                 </Button>
               ) : (
-                <Button 
-                  size="lg" 
-                  className="bg-[#895B26] hover:bg-[#895B26]/90 gap-2"
+                <Button
                   onClick={handleBuyNow}
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold"
                 >
-                  <ShoppingCart className="h-5 w-5" />
+                  <ShoppingCart className="mr-2 h-5 w-5" />
                   Buy Now
                 </Button>
               )}
-              <Button size="lg" variant="outline" className="gap-2">
-                <Music className="h-5 w-5" />
+              <Button
+                variant="outline"
+                className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+              >
+                <Music className="mr-2 h-5 w-5" />
                 Add to Library
               </Button>
             </div>
+
+            {/* Purchase Status Indicator */}
+            {hasPurchased && (
+              <div className="bg-amber-600/20 border border-amber-600/50 rounded-lg p-4">
+                <p className="text-amber-300 text-sm font-medium">
+                  ✓ You own this album - All tracks are unlocked
+                </p>
+              </div>
+            )}
+
+            {!hasPurchased && user && (
+              <div className="bg-orange-600/20 border border-orange-600/50 rounded-lg p-4">
+                <p className="text-orange-300 text-sm font-medium">
+                  🔒 Purchase this album to unlock all tracks
+                </p>
+              </div>
+            )}
+
+            {!user && (
+              <div className="bg-amber-600/20 border border-amber-600/50 rounded-lg p-4">
+                <p className="text-amber-300 text-sm font-medium">
+                  ℹ️ Log in to purchase and access full tracks
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Track List */}
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold mb-6">Tracklist</h2>
-          {displayTracks.map((track, index) => {
-            const isLocked = !hasPurchased && !track.is_preview;
-            
-            return (
-              <Card
-                key={track.id}
-                className={`bg-card border-border hover:border-primary transition-all p-4 group animate-slide-up ${
-                  isLocked ? "opacity-75" : ""
-                }`}
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-muted-foreground w-8">{track.track_number}</span>
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6">
+          <h2 className="text-2xl font-bold text-white mb-6">Tracklist</h2>
+          <div className="space-y-2">
+            {songs.map((track) => {
+              const isLocked = !hasPurchased && !track.is_preview;
+              const isPlaying = currentlyPlaying === track.id;
+
+              return (
+                <div
+                  key={track.id}
+                  className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
+                    isLocked
+                      ? "bg-gray-800/30 cursor-not-allowed opacity-60"
+                      : "bg-white/5 hover:bg-amber-500/10 cursor-pointer"
+                  } ${isPlaying ? "bg-amber-600/30 ring-2 ring-amber-500" : ""}`}
+                  onClick={() => handlePlayTrack(track)}
+                >
+                  <span className="text-gray-400 w-8 text-center">
+                    {track.track_number}
+                  </span>
                   <Button
-                    size="icon"
+                    size="sm"
                     variant="ghost"
-                    className={`hover:bg-primary hover:text-primary-foreground ${
-                      isLocked ? "cursor-not-allowed" : ""
+                    className={`h-10 w-10 rounded-full ${
+                      isLocked
+                        ? "bg-gray-700 text-gray-400"
+                        : isPlaying
+                        ? "bg-amber-600 hover:bg-amber-700 text-black"
+                        : "bg-amber-500 hover:bg-amber-600 text-black"
                     }`}
-                    onClick={() => handlePlayTrack(track as Song)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlayTrack(track);
+                    }}
                   >
                     {isLocked ? (
                       <Lock className="h-4 w-4" />
+                    ) : isPlaying ? (
+                      <Pause className="h-4 w-4" />
                     ) : (
                       <Play className="h-4 w-4" />
                     )}
                   </Button>
-                  <span className="flex-1 font-medium group-hover:text-primary transition-colors">
-                    {track.title}
-                    {track.is_preview && (
-                      <span className="ml-2 text-xs text-muted-foreground">(Preview)</span>
+                  <div className="flex-1">
+                    <p className={`font-medium ${isLocked ? "text-gray-500" : "text-white"}`}>
+                      {track.title}
+                    </p>
+                    {track.is_preview && !hasPurchased && (
+                      <span className="text-xs text-amber-400">(Preview)</span>
                     )}
+                  </div>
+                  <span className={`text-sm ${isLocked ? "text-gray-600" : "text-gray-400"}`}>
+                    {track.duration}
                   </span>
-                  <span className="text-muted-foreground">{track.duration}</span>
                 </div>
-              </Card>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </Card>
       </div>
     </div>
   );
