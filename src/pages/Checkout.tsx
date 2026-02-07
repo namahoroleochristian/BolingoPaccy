@@ -105,14 +105,16 @@ const Checkout = () => {
       const callbackUrl = `${window.location.origin}/payment-callback`;
       
       const response = await supabase.functions.invoke("create-order", {
-        body: {
-          album_id: album.id,
-          customer_email: email,
-          customer_first_name: firstName || undefined,
-          customer_last_name: lastName || undefined,
-          callback_url: callbackUrl,
-        },
-      });
+  body: {
+    album_id: album.id,
+    customer_email: email,
+    customer_first_name: firstName || undefined,
+    customer_last_name: lastName || undefined,
+    callback_url: callbackUrl,
+  },
+ 
+});
+
 
       if (response.error) {
         throw new Error(response.error.message);

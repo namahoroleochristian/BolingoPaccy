@@ -44,7 +44,6 @@ const Album = () => {
         .eq("is_active", true)
         .limit(1)
         .maybeSingle();
-        
 
       if (albumError) {
         console.error("Error fetching album:", albumError);
@@ -108,40 +107,24 @@ const Album = () => {
     });
   };
 
-  // // Fallback tracks for display if no songs in database
-  // const displayTracks = songs.length > 0 ? songs : [
-  //   { id: "1", track_number: 1, title: "Inyenyeri", duration: "4:32", is_preview: true },
-  //   { id: "2", track_number: 2, title: "Umucancuro", duration: "3:45", is_preview: false },
-  //   { id: "3", track_number: 3, title: "Inzozi", duration: "5:12", is_preview: false },
-  //   { id: "4", track_number: 4, title: "Urukundo", duration: "4:18", is_preview: false },
-  //   { id: "5", track_number: 5, title: "Ubumuntu", duration: "3:56", is_preview: false },
-  //   { id: "6", track_number: 6, title: "Amahoro", duration: "4:43", is_preview: false },
-  // ];
+  // Fallback tracks for display if no songs in database
+  const displayTracks = songs.length > 0 ? songs : [
+    { id: "1", track_number: 1, title: "Inyenyeri", duration: "4:32", is_preview: true },
+    { id: "2", track_number: 2, title: "Umucancuro", duration: "3:45", is_preview: false },
+    { id: "3", track_number: 3, title: "Inzozi", duration: "5:12", is_preview: false },
+    { id: "4", track_number: 4, title: "Urukundo", duration: "4:18", is_preview: false },
+    { id: "5", track_number: 5, title: "Ubumuntu", duration: "3:56", is_preview: false },
+    { id: "6", track_number: 6, title: "Amahoro", duration: "4:43", is_preview: false },
+  ];
 
-  // const displayAlbum = album || {
-  //   id: "default",
-  //   title: "Inyenyeri",
-  //   description: "Inyenyeri (The Stars) is a masterful blend of traditional African rhythms and contemporary soundscapes. Each track tells a story of heritage, love, and the human experience, woven together with the distinctive sound of the umucancuro instrument.",
-  //   price: 500,
-  //   currency: "KES",
-  //   cover_url: null,
-  // };
-  if (loading) {
-  return (
-    <div className="flex justify-center items-center h-[60vh]">
-      Loading album...
-    </div>
-  );
-}
-
-if (!album) {
-  return (
-    <div className="flex justify-center items-center h-[60vh]">
-      No album available
-    </div>
-  );
-}
-
+  const displayAlbum = album || {
+    id: "default",
+    title: "Inyenyeri",
+    description: "Inyenyeri (The Stars) is a masterful blend of traditional African rhythms and contemporary soundscapes. Each track tells a story of heritage, love, and the human experience, woven together with the distinctive sound of the umucancuro instrument.",
+    price: 500,
+    currency: "KES",
+    cover_url: null,
+  };
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
@@ -151,8 +134,8 @@ if (!album) {
           <div className="animate-slide-in">
             <Card className="bg-card border-border overflow-hidden">
               <img
-                src={album.cover_url || albumCover}
-                alt={album.title}
+                src={displayAlbum.cover_url || albumCover}
+                alt={displayAlbum.title}
                 className="w-full h-auto"
               />
             </Card>
@@ -162,7 +145,7 @@ if (!album) {
           <div className="space-y-6 animate-fade-in">
             <div>
               <p className="text-primary text-sm uppercase tracking-wider mb-2">Album</p>
-              <h1 className="text-5xl lg:text-6xl font-bold mb-4">{album.title}</h1>
+              <h1 className="text-5xl lg:text-6xl font-bold mb-4">{displayAlbum.title}</h1>
               <p className="text-xl text-muted-foreground">by Bolingo Paccy</p>
             </div>
 
@@ -171,12 +154,12 @@ if (!album) {
               <p><span className="text-foreground font-semibold">Genre:</span> Afro-fusion, Traditional</p>
               <p><span className="text-foreground font-semibold">Duration:</span> 26:26</p>
               <p className="text-2xl font-bold text-[#895B26]">
-                {album.currency} {album.price.toFixed(2)}
+                {displayAlbum.currency} {displayAlbum.price.toFixed(2)}
               </p>
             </div>
 
             <p className="text-muted-foreground leading-relaxed">
-              {album.description}
+              {displayAlbum.description}
             </p>
 
             <div className="flex gap-4 pt-4">
@@ -206,7 +189,7 @@ if (!album) {
         {/* Track List */}
         <div className="space-y-2">
           <h2 className="text-2xl font-bold mb-6">Tracklist</h2>
-          {songs.map((track, index) => {
+          {displayTracks.map((track, index) => {
             const isLocked = !hasPurchased && !track.is_preview;
             
             return (
