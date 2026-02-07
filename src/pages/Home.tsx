@@ -47,11 +47,11 @@ const Home = () => {
           <div className="animate-slide-in">
             <div className="relative max-w-xl mx-auto">
               <div className="absolute -left-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-4 text-sm tracking-[0.3em] rotate-180" style={{ writingMode: "vertical-rl" }}>
-                <span className="text-muted-foreground">ALBUM</span>
+                <span className="text-foreground/60">ALBUM</span>
               </div>
               
-              <div className="relative bg-card rounded-xl overflow-hidden shadow-2xl shadow-primary/20">
-                <div className="p-6 lg:p-8 bg-muted">
+              <div className="relative bg-card rounded-lg overflow-hidden shadow-2xl">
+                <div className="p-6 lg:p-8 bg-[black]">
                   <img
                     src={albumCover}
                     alt="Umucancuro Album Cover"
@@ -75,15 +75,15 @@ const Home = () => {
             </p>
 
             {album && (
-              <p className="text-2xl font-bold text-primary">
-                {album.currency} {album.price.toLocaleString()}
+              <p className="text-2xl font-bold text-[#895B26]">
+                {album.currency} {album.price.toFixed(2)}
               </p>
             )}
 
             <div className="flex flex-wrap gap-4">
               <Button 
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition duration-300 hover:scale-105 shadow-lg shadow-primary/25"
+                className="bg-[#895B26] hover:bg-[#895B26]/90 text-primary-foreground px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition duration-300 hover:scale-105"
                 onClick={handleBuyNow}
               >
                 BUY NOW
@@ -93,7 +93,7 @@ const Home = () => {
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="px-8 py-6 text-base lg:text-lg border-border hover:bg-muted"
+                  className="px-8 py-6 text-base lg:text-lg"
                   onClick={() => navigate("/auth")}
                 >
                   Sign In

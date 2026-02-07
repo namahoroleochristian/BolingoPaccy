@@ -171,7 +171,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in pesapal-ipn-handler:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ error: error.message }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }

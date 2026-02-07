@@ -7,12 +7,15 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <Navigation />
-      <main className="lg:ml-24 pt-20">
-        {children}
-      </main>
-    </div>
+    <div 
+  className="min-h-screen text-foreground 
+             bg-[linear-gradient(135deg,#895B26_0%,black_60%)]"
+>
+  <Navigation />
+  <main className="lg:ml-24 pt-20">
+    {children}
+  </main>
+</div>
   );
 };
 
