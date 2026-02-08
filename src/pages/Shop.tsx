@@ -13,27 +13,27 @@ const Shop = () => {
       image:  new URL("../assets/Bolingo (2).jpeg", import.meta.url).href,
     },
     {
-      id: 4,
+      id: 3,
       title: "Album Artwork",
       image: new URL("../assets/Bolingo (4).jpeg", import.meta.url).href,
     },
     {
-      id: 5,
+      id: 4,
       title: "Studio Session",
       image: new URL("../assets/Bolingo (5).jpeg", import.meta.url).href,
     },
     {
-      id: 6,
+      id: 5,
       title: "Live Performance",
       image: new URL("../assets/Bolingo (8).jpeg", import.meta.url).href,
     },
     {
-      id: 7,
+      id: 6,
       title: "Live Performance",
       image: new URL("../assets/Bolingo (6).jpeg", import.meta.url).href,
     },
     {
-      id: 9,
+      id: 7,
       title: "Concert Merchandise",
       image: new URL("../assets/Bolingo (3).jpeg", import.meta.url).href,
     },
@@ -43,7 +43,7 @@ const Shop = () => {
       image: new URL("../assets/Bolingo (7).jpeg", import.meta.url).href,
     },
     {
-      id: 10,
+      id: 9,
       title: "Bushya Music premier",
       image: new URL("../assets/Bolingo (9).jpeg", import.meta.url).href,
     },
