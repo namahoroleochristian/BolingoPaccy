@@ -28,22 +28,22 @@ const Shop = () => {
       image: new URL("../assets/Bolingo (8).jpeg", import.meta.url).href,
     },
     {
-      id: 6,
+      id: 7,
       title: "Live Performance",
       image: new URL("../assets/Bolingo (6).jpeg", import.meta.url).href,
     },
     {
-      id: 3,
+      id: 9,
       title: "Concert Merchandise",
       image: new URL("../assets/Bolingo (3).jpeg", import.meta.url).href,
     },
     {
-      id: 6,
+      id: 8,
       title: "RTV Versus",
       image: new URL("../assets/Bolingo (7).jpeg", import.meta.url).href,
     },
     {
-      id: 6,
+      id: 10,
       title: "Bushya Music premier",
       image: new URL("../assets/Bolingo (9).jpeg", import.meta.url).href,
     },
