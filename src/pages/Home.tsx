@@ -33,6 +33,10 @@ const Home = () => {
 
   const handleBuyNow = () => {
     if (album) {
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
       navigate(`/checkout?album=${album.id}`);
     } else {
       navigate("/album");

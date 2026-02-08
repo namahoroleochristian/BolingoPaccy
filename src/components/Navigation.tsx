@@ -9,7 +9,7 @@ const Navigation = () => {
   const navItems = [
     { path: "/", label: "Home" },
     { path: "/songs", label: "Songs" },
-    { path: "/shop", label: "Shop" },
+    { path: "/gallery", label: "Gallery" },
     { path: "/album", label: "Album" },
     { path: "/tour", label: "Tour" },
   ];
