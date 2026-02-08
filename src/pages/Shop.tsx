@@ -1,61 +1,61 @@
 import { Card } from "@/components/ui/card";
-import Img1 from '../assets/Bolingo-6.jpeg';
-import Img2 from '../assets/Bolingo-9.jpeg';
-import Img3 from '../assets/Bolingo-2.jpeg';
+import Img1 from '../assets/Bolingo-6.png';
+import Img2 from '../assets/Bolingo-9.png';
+import Img3 from '../assets/Bolingo-2.png';
 import Img4 from '../assets/Bolingo-1.png';
-import Img5 from '../assets/Bolingo-9.jpeg';
-import Img6 from '../assets/Bolingo-7.jpeg';
-import Img7 from '../assets/Bolingo-3.jpeg';
-import Img8 from '../assets/Bolingo-4.jpeg';
-import Img9 from '../assets/Bolingo-5.jpeg';
+import Img5 from '../assets/Bolingo-9.png';
+import Img6 from '../assets/Bolingo-7.png';
+import Img7 from '../assets/Bolingo-3.png';
+import Img8 from '../assets/Bolingo-4.png';
+import Img9 from '../assets/Bolingo-5.png';
 
 const Shop = () => {
   const images = [
-    // {
-    //   id: 1,
-    //   title: "Bolingo",
-    //   image:  Img9,
-    // },
-    // {
-    //   id: 2,
-    //   title: "Imizi Guitar",
-    //   image:  Img8,
-    // },
-    // {
-    //   id: 3,
-    //   title: "Album Artwork",
-    //   image: Img7,
-    // },
-    // {
-    //   id: 4,
-    //   title: "Studio Session",
-    //   image: Img6,
-    // },
-    // {
-    //   id: 5,
-    //   title: "Live Performance",
-    //   image: Img3,
-    // },
-    // {
-    //   id: 6,
-    //   title: "Live Performance",
-    //   image: Img5,
-    // },
+    {
+      id: 1,
+      title: "Bolingo",
+      image:  Img9,
+    },
+    {
+      id: 2,
+      title: "Imizi Guitar",
+      image:  Img8,
+    },
+    {
+      id: 3,
+      title: "Album Artwork",
+      image: Img7,
+    },
+    {
+      id: 4,
+      title: "Studio Session",
+      image: Img6,
+    },
+    {
+      id: 5,
+      title: "Live Performance",
+      image: Img3,
+    },
+    {
+      id: 6,
+      title: "Live Performance",
+      image: Img5,
+    },
     {
       id: 7,
       title: "Concert Merchandise",
       image: Img4,
     },
-    // {
-    //   id: 8,
-    //   title: "RTV Versus",
-    //   image: Img2,
-    // },
-    // {
-    //   id: 9,
-    //   title: "Bushya Music premier",
-    //   image: Img1,
-    // },
+    {
+      id: 8,
+      title: "RTV Versus",
+      image: Img2,
+    },
+    {
+      id: 9,
+      title: "Bushya Music premier",
+      image: Img1,
+    },
     // {
     //   id: 1,
     //   title: "Bolingo",
