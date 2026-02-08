@@ -4,43 +4,59 @@ const Shop = () => {
   const images = [
     {
       id: 1,
-      title: "Inyenyeri Album Cover",
-      image: "https://images.unsplash.com/photo-1619983081593-e2ba5b543168?w=400",
+      title: "Bolingo",
+      image:  new URL("../assets/Bolingo.jpeg", import.meta.url).href,
     },
     {
       id: 2,
-      title: "Vinyl Collection",
-      image: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=400",
-    },
-    {
-      id: 3,
-      title: "Concert Merchandise",
-      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
+      title: "Imizi Guitar",
+      image:  new URL("../assets/Bolingo (2).jpeg", import.meta.url).href,
     },
     {
       id: 4,
       title: "Album Artwork",
-      image: "https://images.unsplash.com/photo-1611329532992-0b18c469ff5a?w=400",
+      image: new URL("../assets/Bolingo (4).jpeg", import.meta.url).href,
     },
     {
       id: 5,
       title: "Studio Session",
-      image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400",
+      image: new URL("../assets/Bolingo (5).jpeg", import.meta.url).href,
     },
     {
       id: 6,
       title: "Live Performance",
-      image: "https://images.unsplash.com/photo-1501612780327-45045538702b?w=400",
+      image: new URL("../assets/Bolingo (8).jpeg", import.meta.url).href,
     },
+    {
+      id: 6,
+      title: "Live Performance",
+      image: new URL("../assets/Bolingo (6).jpeg", import.meta.url).href,
+    },
+    {
+      id: 3,
+      title: "Concert Merchandise",
+      image: new URL("../assets/Bolingo (3).jpeg", import.meta.url).href,
+    },
+    {
+      id: 6,
+      title: "RTV Versus",
+      image: new URL("../assets/Bolingo (7).jpeg", import.meta.url).href,
+    },
+    {
+      id: 6,
+      title: "Bushya Music premier",
+      image: new URL("../assets/Bolingo (9).jpeg", import.meta.url).href,
+    },
+   
   ];
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl lg:text-6xl font-bold mb-4 animate-fade-in">Gallery</h1>
+        {/* <h1 className="text-4xl lg:text-6xl font-bold mb-4 animate-fade-in">Gallery</h1>
         <p className="text-muted-foreground mb-12 text-lg animate-fade-in">
           Moments captured through the lens
-        </p>
+        </p> */}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {images.map((item, index) => (
