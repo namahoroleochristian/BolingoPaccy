@@ -1,352 +1,3 @@
-// import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Card } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import albumCover from "@/assets/AlbumCover.jpeg";
-// import { Play, Music, ShoppingCart, Lock, Unlock, Pause } from "lucide-react";
-// import { supabase } from "@/integrations/supabase/client";
-// import { useAuth } from "@/contexts/AuthContext";
-// import { useToast } from "@/hooks/use-toast";
-
-// interface Album {
-//   id: string;
-//   title: string;
-//   description: string;
-//   price: number;
-//   currency: string;
-//   cover_url: string | null;
-// }
-
-// interface Song {
-//   id: string;
-//   title: string;
-//   track_number: number;
-//   duration: string | null;
-//   is_preview: boolean;
-//   audio_url?: string | null;
-// }
-
-// const Album = () => {
-//   const [album, setAlbum] = useState<Album | null>(null);
-//   const [songs, setSongs] = useState<Song[]>([]);
-//   const [hasPurchased, setHasPurchased] = useState(false);
-//   const [loading, setLoading] = useState(true);
-//   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-//   const { user } = useAuth();
-//   const navigate = useNavigate();
-//   const { toast } = useToast();
-
-//   useEffect(() => {
-//     const fetchAlbumData = async () => {
-//       // Fetch first active album
-//       const { data: albumData, error: albumError } = await supabase
-//         .from("albums")
-//         .select("*")
-//         .eq("is_active", true)
-//         .limit(1)
-//         .maybeSingle();
-
-//       if (albumError) {
-//         console.error("Error fetching album:", albumError);
-//         setLoading(false);
-//         return;
-//       }
-
-//       if (!albumData) {
-//         setLoading(false);
-//         return;
-//       }
-
-//       setAlbum(albumData);
-
-//       // Fetch songs
-//       const { data: songsData } = await supabase
-//         .from("songs")
-//         .select("*")
-//         .eq("album_id", albumData.id)
-//         .order("track_number");
-
-//       setSongs(songsData || []);
-
-//       // Check purchase status if logged in
-//       if (user) {
-//         const { data: purchaseData, error: purchaseError } = await supabase
-//           .from("orders")
-//           .select("id, status")
-//           .eq("customer_email", user.email)
-//           .eq("album_id", albumData.id)
-//           .eq("status", "completed")
-//           .maybeSingle();
-
-//         if (purchaseError) {
-//           console.error("Error checking purchase status:", purchaseError);
-//         }
-
-//         const purchased = !!purchaseData;
-//         setHasPurchased(purchased);
-//         console.log("Purchase status for user:", user.email, "- Purchased:", purchased);
-        
-//         if (purchased) {
-//           toast({
-//             title: "Album Owned",
-//             description: "You can play all tracks from this album!",
-//             duration: 3000,
-//           });
-//         }
-//       } else {
-//         setHasPurchased(false);
-//       }
-
-//       setLoading(false);
-//     };
-
-//     fetchAlbumData();
-//   }, [user, toast]);
-
-//   // Re-check purchase status when user changes
-//   useEffect(() => {
-//     if (user && album) {
-//       const checkPurchase = async () => {
-//         const { data: purchaseData } = await supabase
-//           .from("orders")
-//           .select("id, status")
-//           .eq("customer_email", user.email)
-//           .eq("album_id", album.id)
-//           .eq("status", "completed")
-//           .maybeSingle();
-
-//         setHasPurchased(!!purchaseData);
-//       };
-
-//       checkPurchase();
-//     }
-//   }, [user, album]);
-
-//   const handleBuyNow = () => {
-//     if (!album) return;
-    
-//     if (!user) {
-//       toast({
-//         title: "Login Required",
-//         description: "Please log in to purchase this album.",
-//         variant: "destructive",
-//       });
-//       navigate("/login");
-//       return;
-//     }
-
-//     navigate(`/checkout?album=${album.id}`);
-//   };
-
-//   const handlePlayTrack = (song: Song) => {
-//     // If user hasn't purchased and it's not a preview, block playback
-//     if (!hasPurchased && !song.is_preview) {
-//       toast({
-//         title: "Purchase Required",
-//         description: "Buy the album to unlock all tracks.",
-//         variant: "destructive",
-//       });
-//       return;
-//     }
-
-//     // Toggle play/pause for the same track
-//     if (currentlyPlaying === song.id) {
-//       setCurrentlyPlaying(null);
-//       toast({
-//         title: "Paused",
-//         description: song.title,
-//       });
-//     } else {
-//       setCurrentlyPlaying(song.id);
-//       toast({
-//         title: "Now Playing",
-//         description: `${song.title}${hasPurchased ? ' (Full Version)' : ' (Preview)'}`,
-//       });
-      
-//       // Here you would integrate with an actual audio player
-//       // For example, if you have an audio_url in your song data:
-//       if (song.audio_url) {
-//         console.log("Playing audio from:", song.audio_url);
-//         // Implement actual audio playback here
-//       }
-//     }
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-amber-900">
-//         <div className="text-amber-100 text-xl">Loading album...</div>
-//       </div>
-//     );
-//   }
-
-//   if (!album) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-amber-900">
-//         <div className="text-amber-100 text-xl">No album available</div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-amber-900 p-4 md:p-8">
-//       <div className="max-w-6xl mx-auto">
-//         <div className="grid md:grid-cols-2 gap-8 mb-12">
-//           {/* Album Cover */}
-//           <Card className="overflow-hidden bg-white/10 backdrop-blur-lg border-white/20">
-//             <img
-//               src={album.cover_url || albumCover}
-//               alt={album.title}
-//               className="w-full aspect-square object-cover"
-//             />
-//           </Card>
-
-//           {/* Album Info */}
-//           <div className="text-white space-y-6">
-//             <div>
-//               <p className="text-sm uppercase tracking-wider text-amber-400 mb-2">
-//                 Album
-//               </p>
-//               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-//                 {album.title}
-//               </h1>
-//               <p className="text-lg text-amber-200">by Bolingo Paccy</p>
-//             </div>
-
-//             <div className="space-y-2 text-sm text-gray-300">
-//               <p>Released: 2024</p>
-//               <p>Genre: Afro-fusion, Traditional</p>
-//               <p>Duration: 26:26</p>
-//               <p className="text-2xl font-bold text-white mt-4">
-//                 {album.currency} {album.price.toFixed(2)}
-//               </p>
-//             </div>
-
-//             <p className="text-gray-300 leading-relaxed">{album.description}</p>
-
-//             <div className="flex gap-4">
-//               {hasPurchased ? (
-//                 <Button
-//                   className="flex-1 bg-amber-600 hover:bg-amber-700 text-black font-semibold"
-//                   disabled
-//                 >
-//                   <Unlock className="mr-2 h-5 w-5" />
-//                   Album Owned
-//                 </Button>
-//               ) : (
-//                 <Button
-//                   onClick={handleBuyNow}
-//                   className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold"
-//                 >
-//                   <ShoppingCart className="mr-2 h-5 w-5" />
-//                   Buy Now
-//                 </Button>
-//               )}
-//               <Button
-//                 variant="outline"
-//                 className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
-//               >
-//                 <Music className="mr-2 h-5 w-5" />
-//                 Add to Library
-//               </Button>
-//             </div>
-
-//             {/* Purchase Status Indicator */}
-//             {hasPurchased && (
-//               <div className="bg-amber-600/20 border border-amber-600/50 rounded-lg p-4">
-//                 <p className="text-amber-300 text-sm font-medium">
-//                   ✓ You own this album - All tracks are unlocked
-//                 </p>
-//               </div>
-//             )}
-
-//             {!hasPurchased && user && (
-//               <div className="bg-orange-600/20 border border-orange-600/50 rounded-lg p-4">
-//                 <p className="text-orange-300 text-sm font-medium">
-//                   🔒 Purchase this album to unlock all tracks
-//                 </p>
-//               </div>
-//             )}
-
-//             {!user && (
-//               <div className="bg-amber-600/20 border border-amber-600/50 rounded-lg p-4">
-//                 <p className="text-amber-300 text-sm font-medium">
-//                   ℹ️ Log in to purchase and access full tracks
-//                 </p>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Track List */}
-//         <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6">
-//           <h2 className="text-2xl font-bold text-white mb-6">Tracklist</h2>
-//           <div className="space-y-2">
-//             {songs.map((track) => {
-//               const isLocked = !hasPurchased && !track.is_preview;
-//               const isPlaying = currentlyPlaying === track.id;
-
-//               return (
-//                 <div
-//                   key={track.id}
-//                   className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
-//                     isLocked
-//                       ? "bg-gray-800/30 cursor-not-allowed opacity-60"
-//                       : "bg-white/5 hover:bg-amber-500/10 cursor-pointer"
-//                   } ${isPlaying ? "bg-amber-600/30 ring-2 ring-amber-500" : ""}`}
-//                   onClick={() => handlePlayTrack(track)}
-//                 >
-//                   <span className="text-gray-400 w-8 text-center">
-//                     {track.track_number}
-//                   </span>
-//                   <Button
-//                     size="sm"
-//                     variant="ghost"
-//                     className={`h-10 w-10 rounded-full ${
-//                       isLocked
-//                         ? "bg-gray-700 text-gray-400"
-//                         : isPlaying
-//                         ? "bg-amber-600 hover:bg-amber-700 text-black"
-//                         : "bg-amber-500 hover:bg-amber-600 text-black"
-//                     }`}
-//                     onClick={(e) => {
-//                       e.stopPropagation();
-//                       handlePlayTrack(track);
-//                     }}
-//                   >
-//                     {isLocked ? (
-//                       <Lock className="h-4 w-4" />
-//                     ) : isPlaying ? (
-//                       <Pause className="h-4 w-4" />
-//                     ) : (
-//                       <Play className="h-4 w-4" />
-//                     )}
-//                   </Button>
-//                   <div className="flex-1">
-//                     <p className={`font-medium ${isLocked ? "text-gray-500" : "text-white"}`}>
-//                       {track.title}
-//                     </p>
-//                     {track.is_preview && !hasPurchased && (
-//                       <span className="text-xs text-amber-400">(Preview)</span>
-//                     )}
-//                   </div>
-//                   <span className={`text-sm ${isLocked ? "text-gray-600" : "text-gray-400"}`}>
-//                     {track.duration}
-//                   </span>
-//                 </div>
-//               );
-//             })}
-//           </div>
-//         </Card>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Album;
-
-
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -542,47 +193,47 @@ const Album = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-amber-900">
-        <div className="text-amber-100 text-xl">Loading albums...</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-foreground text-xl">Loading albums...</div>
       </div>
     );
   }
 
   if (albums.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-amber-900">
-        <div className="text-amber-100 text-xl">No albums available</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-foreground text-xl">No albums available</div>
       </div>
     );
   }
 
   if (!currentAlbum) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-amber-900">
-        <div className="text-amber-100 text-xl">No album selected</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-foreground text-xl">No album selected</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-amber-900 p-4 md:p-8">
+    <div className="min-h-screen bg-background py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Album Navigation - Only show if multiple albums */}
         {albums.length > 1 && (
-          <div className="mb-8">
+          <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handlePreviousAlbum}
-                className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+                className="border-border hover:bg-accent"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous
+                <span className="hidden sm:inline">Previous</span>
               </Button>
               
               <div className="text-center">
-                <p className="text-amber-400 text-sm">
+                <p className="text-muted-foreground text-xs sm:text-sm">
                   Album {albums.findIndex(a => a.id === currentAlbum.id) + 1} of {albums.length}
                 </p>
               </div>
@@ -591,23 +242,23 @@ const Album = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleNextAlbum}
-                className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+                className="border-border hover:bg-accent"
               >
-                Next
+                <span className="hidden sm:inline">Next</span>
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
 
             {/* Album Selector */}
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
               {albums.map((album) => (
                 <button
                   key={album.id}
                   onClick={() => handleAlbumChange(album)}
-                  className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                     currentAlbum.id === album.id
-                      ? "bg-amber-600 text-black"
-                      : "bg-white/10 text-amber-200 hover:bg-white/20"
+                      ? "bg-[#895B26] text-white"
+                      : "bg-card border border-border text-foreground hover:bg-accent"
                   }`}
                 >
                   {album.title}
@@ -617,9 +268,9 @@ const Album = () => {
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
           {/* Album Cover */}
-          <Card className="overflow-hidden bg-white/10 backdrop-blur-lg border-white/20">
+          <Card className="overflow-hidden bg-card border-border">
             <img
               src={currentAlbum.cover_url || albumCover}
               alt={currentAlbum.title}
@@ -628,85 +279,87 @@ const Album = () => {
           </Card>
 
           {/* Album Info */}
-          <div className="text-white space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div>
-              <p className="text-sm uppercase tracking-wider text-amber-400 mb-2">
+              <p className="text-xs sm:text-sm uppercase tracking-wider text-[#895B26] mb-2">
                 Album
               </p>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-foreground">
                 {currentAlbum.title}
               </h1>
-              <p className="text-lg text-amber-200">by Bolingo Paccy</p>
+              <p className="text-base sm:text-lg text-muted-foreground">by Bolingo Paccy</p>
             </div>
 
-            <div className="space-y-2 text-sm text-gray-300">
+            <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
               <p>Released: 2024</p>
               <p>Genre: Afro-fusion, Traditional</p>
               <p>Tracks: {songs.length}</p>
-              <p className="text-2xl font-bold text-white mt-4">
+              <p className="text-xl sm:text-2xl font-bold text-foreground mt-3 sm:mt-4">
                 {currentAlbum.currency} {currentAlbum.price.toFixed(2)}
               </p>
             </div>
 
-            <p className="text-gray-300 leading-relaxed">{currentAlbum.description}</p>
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+              {currentAlbum.description}
+            </p>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               {hasPurchased ? (
                 <Button
-                  className="flex-1 bg-amber-600 hover:bg-amber-700 text-black font-semibold"
+                  className="flex-1 bg-[#895B26] hover:bg-[#895B26]/90 text-white font-semibold"
                   disabled
                 >
-                  <Unlock className="mr-2 h-5 w-5" />
+                  <Unlock className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Album Owned
                 </Button>
               ) : (
                 <Button
                   onClick={handleBuyNow}
-                  className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-semibold"
+                  className="flex-1 bg-[#895B26] hover:bg-[#895B26]/90 text-white font-semibold"
                 >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  <ShoppingCart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Buy Now
                 </Button>
               )}
               <Button
                 variant="outline"
-                className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+                className="flex-1 border-border hover:bg-accent"
               >
-                <Music className="mr-2 h-5 w-5" />
+                <Music className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Add to Library
               </Button>
             </div>
 
             {/* Purchase Status Indicator */}
             {hasPurchased && (
-              <div className="bg-amber-600/20 border border-amber-600/50 rounded-lg p-4">
-                <p className="text-amber-300 text-sm font-medium">
+              <Card className="bg-[#895B26]/10 border-[#895B26]/30 p-3 sm:p-4">
+                <p className="text-[#895B26] text-xs sm:text-sm font-medium">
                   ✓ You own this album - All tracks are unlocked
                 </p>
-              </div>
+              </Card>
             )}
 
             {!hasPurchased && user && (
-              <div className="bg-orange-600/20 border border-orange-600/50 rounded-lg p-4">
-                <p className="text-orange-300 text-sm font-medium">
+              <Card className="bg-destructive/10 border-destructive/30 p-3 sm:p-4">
+                <p className="text-destructive text-xs sm:text-sm font-medium">
                   🔒 Purchase this album to unlock all tracks
                 </p>
-              </div>
+              </Card>
             )}
 
             {!user && (
-              <div className="bg-amber-600/20 border border-amber-600/50 rounded-lg p-4">
-                <p className="text-amber-300 text-sm font-medium">
+              <Card className="bg-muted border-border p-3 sm:p-4">
+                <p className="text-muted-foreground text-xs sm:text-sm font-medium">
                   ℹ️ Log in to purchase and access full tracks
                 </p>
-              </div>
+              </Card>
             )}
           </div>
         </div>
 
         {/* Track List */}
-        <Card className="bg-white/10 backdrop-blur-lg border-white/20 p-6">
-          <h2 className="text-2xl font-bold text-white mb-6">Tracklist</h2>
+        <Card className="bg-card border-border p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-4 sm:mb-6">Tracklist</h2>
           <div className="space-y-2">
             {songs.map((track) => {
               const isLocked = !hasPurchased && !track.is_preview;
@@ -715,25 +368,25 @@ const Album = () => {
               return (
                 <div
                   key={track.id}
-                  className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
+                  className={`flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-lg transition-all ${
                     isLocked
-                      ? "bg-gray-800/30 cursor-not-allowed opacity-60"
-                      : "bg-white/5 hover:bg-amber-500/10 cursor-pointer"
-                  } ${isPlaying ? "bg-amber-600/30 ring-2 ring-amber-500" : ""}`}
+                      ? "bg-muted/50 cursor-not-allowed opacity-60"
+                      : "bg-accent/50 hover:bg-accent cursor-pointer"
+                  } ${isPlaying ? "bg-[#895B26]/20 ring-2 ring-[#895B26]" : ""}`}
                   onClick={() => handlePlayTrack(track)}
                 >
-                  <span className="text-gray-400 w-8 text-center">
+                  <span className="text-muted-foreground w-6 sm:w-8 text-center text-sm">
                     {track.track_number}
                   </span>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className={`h-10 w-10 rounded-full ${
+                    className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full flex-shrink-0 ${
                       isLocked
-                        ? "bg-gray-700 text-gray-400"
+                        ? "bg-muted text-muted-foreground"
                         : isPlaying
-                        ? "bg-amber-600 hover:bg-amber-700 text-black"
-                        : "bg-amber-500 hover:bg-amber-600 text-black"
+                        ? "bg-[#895B26] hover:bg-[#895B26]/90 text-white"
+                        : "bg-[#895B26] hover:bg-[#895B26]/90 text-white"
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -741,22 +394,22 @@ const Album = () => {
                     }}
                   >
                     {isLocked ? (
-                      <Lock className="h-4 w-4" />
+                      <Lock className="h-3 w-3 sm:h-4 sm:w-4" />
                     ) : isPlaying ? (
-                      <Pause className="h-4 w-4" />
+                      <Pause className="h-3 w-3 sm:h-4 sm:w-4" />
                     ) : (
-                      <Play className="h-4 w-4" />
+                      <Play className="h-3 w-3 sm:h-4 sm:w-4" />
                     )}
                   </Button>
-                  <div className="flex-1">
-                    <p className={`font-medium ${isLocked ? "text-gray-500" : "text-white"}`}>
+                  <div className="flex-1 min-w-0">
+                    <p className={`font-medium text-sm sm:text-base truncate ${isLocked ? "text-muted-foreground" : "text-foreground"}`}>
                       {track.title}
                     </p>
                     {track.is_preview && !hasPurchased && (
-                      <span className="text-xs text-amber-400">(Preview)</span>
+                      <span className="text-xs text-[#895B26]">(Preview)</span>
                     )}
                   </div>
-                  <span className={`text-sm ${isLocked ? "text-gray-600" : "text-gray-400"}`}>
+                  <span className={`text-xs sm:text-sm flex-shrink-0 ${isLocked ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
                     {track.duration}
                   </span>
                 </div>
