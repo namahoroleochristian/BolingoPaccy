@@ -1,52 +1,106 @@
 import { Card } from "@/components/ui/card";
+import Img1 from '../assets/Bolingo-6.jpeg';
+import Img2 from '../assets/Bolingo-9.jpeg';
+import Img3 from '../assets/Bolingo-2.jpeg';
+import Img4 from '../assets/Bolingo-1.png';
+import Img5 from '../assets/Bolingo-9.jpeg';
+import Img6 from '../assets/Bolingo-7.jpeg';
+import Img7 from '../assets/Bolingo-3.jpeg';
+import Img8 from '../assets/Bolingo-4.jpeg';
+import Img9 from '../assets/Bolingo-5.jpeg';
 
 const Shop = () => {
   const images = [
-    {
-      id: 1,
-      title: "Bolingo",
-      image:  new URL("../assets/Bolingo.jpeg", import.meta.url).href,
-    },
-    {
-      id: 2,
-      title: "Imizi Guitar",
-      image:  new URL("../assets/Bolingo (2).jpeg", import.meta.url).href,
-    },
-    {
-      id: 3,
-      title: "Album Artwork",
-      image: new URL("../assets/Bolingo (4).jpeg", import.meta.url).href,
-    },
-    {
-      id: 4,
-      title: "Studio Session",
-      image: new URL("../assets/Bolingo (5).jpeg", import.meta.url).href,
-    },
-    {
-      id: 5,
-      title: "Live Performance",
-      image: new URL("../assets/Bolingo (8).jpeg", import.meta.url).href,
-    },
-    {
-      id: 6,
-      title: "Live Performance",
-      image: new URL("../assets/Bolingo (6).jpeg", import.meta.url).href,
-    },
+    // {
+    //   id: 1,
+    //   title: "Bolingo",
+    //   image:  Img9,
+    // },
+    // {
+    //   id: 2,
+    //   title: "Imizi Guitar",
+    //   image:  Img8,
+    // },
+    // {
+    //   id: 3,
+    //   title: "Album Artwork",
+    //   image: Img7,
+    // },
+    // {
+    //   id: 4,
+    //   title: "Studio Session",
+    //   image: Img6,
+    // },
+    // {
+    //   id: 5,
+    //   title: "Live Performance",
+    //   image: Img3,
+    // },
+    // {
+    //   id: 6,
+    //   title: "Live Performance",
+    //   image: Img5,
+    // },
     {
       id: 7,
       title: "Concert Merchandise",
-      image: new URL("../assets/Bolingo (3).jpeg", import.meta.url).href,
+      image: Img4,
     },
-    {
-      id: 8,
-      title: "RTV Versus",
-      image: new URL("../assets/Bolingo (7).jpeg", import.meta.url).href,
-    },
-    {
-      id: 9,
-      title: "Bushya Music premier",
-      image: new URL("../assets/Bolingo (9).jpeg", import.meta.url).href,
-    },
+    // {
+    //   id: 8,
+    //   title: "RTV Versus",
+    //   image: Img2,
+    // },
+    // {
+    //   id: 9,
+    //   title: "Bushya Music premier",
+    //   image: Img1,
+    // },
+    // {
+    //   id: 1,
+    //   title: "Bolingo",
+    //   image:  new URL("../assets/Bolingo.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 2,
+    //   title: "Imizi Guitar",
+    //   image:  new URL("../assets/Bolingo-2.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 3,
+    //   title: "Album Artwork",
+    //   image: new URL("../assets/Bolingo-4.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 4,
+    //   title: "Studio Session",
+    //   image: new URL("../assets/Bolingo-5.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 5,
+    //   title: "Live Performance",
+    //   image: new URL("../assets/Bolingo-8.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 6,
+    //   title: "Live Performance",
+    //   image: new URL("../assets/Bolingo-6.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 7,
+    //   title: "Concert Merchandise",
+    //   image: new URL("../assets/Bolingo-3.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 8,
+    //   title: "RTV Versus",
+    //   image: new URL("../assets/Bolingo-7.jpeg", import.meta.url).href,
+    // },
+    // {
+    //   id: 9,
+    //   title: "Bushya Music premier",
+    //   image: new URL("../assets/Bolingo (9).jpeg", import.meta.url).href,
+    // },
    
   ];
 
