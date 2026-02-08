@@ -61,7 +61,7 @@ const Shop = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {images.map((item, index) => (
             <Card
-              key={item.id}
+              key={index}
               className="bg-card border-border overflow-hidden group animate-slide-up cursor-pointer"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
