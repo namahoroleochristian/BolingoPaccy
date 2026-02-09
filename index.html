@@ -30,5 +30,28 @@
   <body>
     <div id="root" ></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // When user leaves your tab/page
+// Check and request permission first
+async function clearClipboardOnExit() {
+  // Request permission (if not already granted)
+  const { state } = await navigator.permissions.query({ 
+    name: 'clipboard-write' 
+  });
+  
+  if (state === 'granted' || state === 'prompt') {
+    window.addEventListener('beforeunload', async () => {
+      try {
+        await navigator.clipboard.writeText('');
+      } catch (err) {
+        // Silent fail
+      }
+    });
+  }
+}
+
+// Call this when your page loads
+clearClipboardOnExit();
+    </script>
   </body>
 </html>

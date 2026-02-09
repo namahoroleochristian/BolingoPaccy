@@ -12,6 +12,7 @@ import Tour from "./pages/Tour";
 import Auth from "./pages/Auth";
 import Checkout from "./pages/Checkout";
 import PaymentCallback from "./pages/PaymentCallback";
+import PremiumContent from "./pages/PremiumContent"; // Add this import
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 
@@ -33,6 +34,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/payment-callback" element={<PaymentCallback />} />
+            {/* ADD THE PREMIUM CONTENT ROUTE - Protected by the component itself */}
+            <Route path="/premium-content" element={<Layout><PremiumContent /></Layout>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

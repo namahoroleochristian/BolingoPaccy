@@ -269,6 +269,39 @@ export type Database = {
         }
         Relationships: []
       }
+      // ADDED: premium_access_logs table
+      premium_access_logs: {
+        Row: {
+          id: string
+          user_email: string
+          album_id: string
+          accessed_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_email: string
+          album_id: string
+          accessed_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_email?: string
+          album_id?: string
+          accessed_at?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premium_access_logs_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
