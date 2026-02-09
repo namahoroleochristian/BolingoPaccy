@@ -28,7 +28,7 @@ All colors MUST be HSL.
     --popover-foreground: 0 0% 15%;
 
     /* 10% - STRONG Cool Gray-Blue (Enhanced from #c2c5cc) */
-    --primary: 215 70% 55%; /* hsl(215, 70%, 55%) - Much stronger blue! */
+    --primary: 0 0% 15%; /* hsl(215, 70%, 55%) - Much stronger blue! */
     --primary-foreground: 0 0% 98%; /* White text on blue buttons */
 
     /* Supporting colors (variations) */
