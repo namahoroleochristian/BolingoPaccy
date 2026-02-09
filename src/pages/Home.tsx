@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import albumCover from "@/assets/AlbumCover.jpeg";
+import albumCover from "@/assets/AlbumCover.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 
@@ -69,7 +69,7 @@ const Home = () => {
           {/* Album Info */}
           <div className="animate-fade-in space-y-6 lg:space-y-8">
             <h1 className="text-4xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-foreground">
-              UMUCANCURO ALBUM
+              INYENYERI ALBUM
             </h1>
             
             <p className="text-base lg:text-lg text-muted-foreground leading-relaxed max-w-xl">
