@@ -1,72 +1,102 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Song {
   id: string;
   title: string;
-  duration: string | null;
-  featured?: boolean;
-  track_number: number;
+  youtube_url?: string;
+  spotify_url?: string;
 }
 
+const albumSongs: Song[] = [
+  {
+    id: "1",
+    title: "BUSHYA FT OKKAMA",
+    youtube_url: "https://www.youtube.com/embed/Wu8UsgF5xXM",
+  },
+  {
+    id: "2",
+    title: "SINICUZA FT KING JAMES",
+    youtube_url: "https://www.youtube.com/embed/rLsrUoEX3oI",
+  },
+  {
+    id: "4",
+    title: "Umucancuro",
+    spotify_url: "https://open.spotify.com/embed/track/6h3RMfsYOEmg8nYZuITB27?theme=0",
+  },
+  {
+    id: "3",
+    title: "Ese Urihe",
+    youtube_url: "https://www.youtube.com/embed/u02A6fov_kI",
+  },
+  {
+    id: "5",
+    title: "Ihogoza ft Mani Martin",
+    spotify_url: "https://open.spotify.com/embed/track/3LLyDdulzaT8U577Z3DsOD",
+  },
+  {
+    id: "7",
+    title: "Kabyino ka nyogokuru ",
+    spotify_url: "https://open.spotify.com/embed/track/4m2YB6kRDxo23HIoXWwcxt?theme=0",
+  },
+  {
+    id: "6",
+    title: "Umuntu",
+    spotify_url: "https://open.spotify.com/embed/track/3oFMfWkGHBTDSOJO0mmFVl?theme=0",
+  },
+  {
+    id: "8",
+    title: "Biranyura",
+    youtube_url: "https://www.youtube.com/embed/Rv0Z3gXU-Mo",
+  },
+];
+
 const Songs = () => {
-  const [songs, setSongs] = useState<Song[]>([]);
-  
-  useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const { data: songsData } = await supabase
-          .from("songs")
-          .select("*")
-          .order("track_number");
-        setSongs(songsData || []);
-      } catch (error) {
-        console.error("Error fetching songs:", error);
-      } 
-    };
-    fetchSongs();
-  }, []);
-
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20 bg-background">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl lg:text-6xl font-bold mb-4 animate-fade-in text-foreground">Songs</h1>
-        <p className="text-muted-foreground mb-12 text-lg animate-fade-in">
-          Explore the complete collection from the Inyenyeri Album
-        </p>
+    <div className="container mx-auto px-4 py-12 bg-background">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-foreground">Songs</h1>
+          <p className="text-muted-foreground text-lg">
+            Listen to the complete Inyenyeri Album
+          </p>
+        </div>
 
-        <div className="space-y-4">
-          {songs.map((song, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {albumSongs.map((song) => (
             <Card
               key={song.id}
-              className="bg-card border-[hsl(var(--border))] hover:border-[hsl(var(--primary))] transition-all animate-slide-up p-6 group"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="bg-card border border-border overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 flex-1">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))] transition-colors"
-                  >
-                    <Play className="h-5 w-5" />
-                  </Button>
-                  
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg group-hover:text-[hsl(var(--primary))] transition-colors text-foreground">
-                      {song.title}
-                    </h3>
-                    {song.featured && (
-                      <span className="text-xs text-[hsl(var(--primary))]">Featured Track</span>
-                    )}
-                  </div>
+              {/* YouTube iframe */}
+              {song.youtube_url && (
+                <div className="aspect-video">
+                  <iframe
+                    src={song.youtube_url}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={`YouTube - ${song.title}`}
+                  />
                 </div>
+              )}
+              
+              {/* Spotify iframe (only if no YouTube) */}
+              {!song.youtube_url && song.spotify_url && (
+                <div className="h-24">
+                  <iframe className="min-h-full "  src={song.spotify_url} width="100%" height="330" frameBorder="0"  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+              )}
 
-                <span className="text-muted-foreground">{song.duration}</span>
+              {/* Song title */}
+                  {song.youtube_url && (
+              <div className="p-4 text-center">
+
+                    <h3 className="font-bold text-lg text-foreground truncate">
+                      {song.title}
+                </h3>
               </div>
+                  )                           
+}
             </Card>
           ))}
         </div>
