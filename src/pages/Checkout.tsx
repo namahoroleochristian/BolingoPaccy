@@ -105,16 +105,14 @@ const Checkout = () => {
       const callbackUrl = `${window.location.origin}/payment-callback`;
       
       const response = await supabase.functions.invoke("create-order", {
-  body: {
-    album_id: album.id,
-    customer_email: email,
-    customer_first_name: firstName || undefined,
-    customer_last_name: lastName || undefined,
-    callback_url: callbackUrl,
-  },
- 
-});
-
+        body: {
+          album_id: album.id,
+          customer_email: email,
+          customer_first_name: firstName || undefined,
+          customer_last_name: lastName || undefined,
+          callback_url: callbackUrl,
+        },
+      });
 
       if (response.error) {
         throw new Error(response.error.message);
@@ -146,7 +144,7 @@ const Checkout = () => {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20 flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--primary))]" />
         </div>
       </Layout>
     );
@@ -156,11 +154,14 @@ const Checkout = () => {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-3xl font-bold mb-4">Album Not Found</h1>
+          <h1 className="text-3xl font-bold mb-4 text-foreground">Album Not Found</h1>
           <p className="text-muted-foreground mb-8">
             The album you're looking for doesn't exist or is no longer available.
           </p>
-          <Button onClick={() => navigate("/")} className="bg-[#895B26]">
+          <Button 
+            onClick={() => navigate("/")} 
+            className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
+          >
             Go Home
           </Button>
         </div>
@@ -172,15 +173,15 @@ const Checkout = () => {
     <Layout>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl lg:text-4xl font-bold mb-8 flex items-center gap-3">
+          <h1 className="text-3xl lg:text-4xl font-bold mb-8 flex items-center gap-3 text-foreground">
             <ShoppingCart className="h-8 w-8" />
             Checkout
           </h1>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Order Summary */}
-            <Card className="p-6 bg-card border-border">
-              <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+            <Card className="p-6 bg-card border-[hsl(var(--border))]">
+              <h2 className="text-xl font-semibold mb-6 text-foreground">Order Summary</h2>
               
               <div className="flex gap-4 mb-6">
                 <img
@@ -189,20 +190,20 @@ const Checkout = () => {
                   className="w-24 h-24 object-cover rounded-lg"
                 />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{album.title}</h3>
+                  <h3 className="font-semibold text-lg text-foreground">{album.title}</h3>
                   <p className="text-sm text-muted-foreground mb-2">
                     {album.description}
                   </p>
-                  <p className="text-xl font-bold text-[#895B26]">
+                  <p className="text-xl font-bold text-[hsl(var(--primary))]">
                     {album.currency} {album.price.toFixed(2)}
                   </p>
                 </div>
               </div>
 
-              <div className="border-t border-border pt-4">
+              <div className="border-t border-[hsl(var(--border))] pt-4">
                 <div className="flex justify-between text-lg font-semibold">
-                  <span>Total</span>
-                  <span className="text-[#895B26]">
+                  <span className="text-foreground">Total</span>
+                  <span className="text-[hsl(var(--primary))]">
                     {album.currency} {album.price.toFixed(2)}
                   </span>
                 </div>
@@ -210,12 +211,12 @@ const Checkout = () => {
             </Card>
 
             {/* Checkout Form */}
-            <Card className="p-6 bg-card border-border">
-              <h2 className="text-xl font-semibold mb-6">Your Details</h2>
+            <Card className="p-6 bg-card border-[hsl(var(--border))]">
+              <h2 className="text-xl font-semibold mb-6 text-foreground">Your Details</h2>
               
               <form onSubmit={handleCheckout} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email" className="text-foreground">Email *</Label>
                   <Input
                     id="email"
                     type="email"
@@ -223,9 +224,10 @@ const Checkout = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
+                    className="bg-card border-[hsl(var(--border))] text-foreground"
                   />
                   {emailError && (
-                    <p className="text-sm text-destructive">{emailError}</p>
+                    <p className="text-sm text-[hsl(var(--destructive))]">{emailError}</p>
                   )}
                   <p className="text-xs text-muted-foreground">
                     Your purchase confirmation will be sent here
@@ -234,21 +236,23 @@ const Checkout = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName" className="text-foreground">First Name</Label>
                     <Input
                       id="firstName"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="John"
+                      className="bg-card border-[hsl(var(--border))] text-foreground"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-foreground">Last Name</Label>
                     <Input
                       id="lastName"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Doe"
+                      className="bg-card border-[hsl(var(--border))] text-foreground"
                     />
                   </div>
                 </div>
@@ -256,7 +260,7 @@ const Checkout = () => {
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full bg-[#895B26] hover:bg-[#895B26]/90 h-12 text-lg"
+                    className="w-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 h-12 text-lg text-[hsl(var(--primary-foreground))]"
                     disabled={loading}
                   >
                     {loading ? (

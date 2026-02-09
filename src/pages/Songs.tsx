@@ -4,36 +4,36 @@ import { Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+interface Song {
+  id: string;
+  title: string;
+  duration: string | null;
+  featured?: boolean;
+  track_number: number;
+}
+
 const Songs = () => {
-  const [songs,setSongs] =useState([]);
-  useEffect(()=>{
+  const [songs, setSongs] = useState<Song[]>([]);
+  
+  useEffect(() => {
     const fetchSongs = async () => {
       try {
-       const { data: songsData } = await supabase
-        .from("songs")
-        .select("*")
-        // .eq("album_id", albumData.id)
-        .order("track_number");
+        const { data: songsData } = await supabase
+          .from("songs")
+          .select("*")
+          .order("track_number");
         setSongs(songsData || []);
       } catch (error) {
         console.error("Error fetching songs:", error);
       } 
     };
     fetchSongs();
-  },[songs])
-  // const songs = [
-  //   { id: 1, title: "Inyenyeri", duration: "4:32", featured: true },
-  //   { id: 2, title: "Umucancuro", duration: "3:45", featured: false },
-  //   { id: 3, title: "Inzozi", duration: "5:12", featured: false },
-  //   { id: 4, title: "Urukundo", duration: "4:18", featured: false },
-  //   { id: 5, title: "Ubumuntu", duration: "3:56", featured: false },
-  //   { id: 6, title: "Amahoro", duration: "4:43", featured: false },
-  // ];
+  }, []);
 
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
+    <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20 bg-background">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl lg:text-6xl font-bold mb-4 animate-fade-in">Songs</h1>
+        <h1 className="text-4xl lg:text-6xl font-bold mb-4 animate-fade-in text-foreground">Songs</h1>
         <p className="text-muted-foreground mb-12 text-lg animate-fade-in">
           Explore the complete collection from the Inyenyeri Album
         </p>
@@ -42,7 +42,7 @@ const Songs = () => {
           {songs.map((song, index) => (
             <Card
               key={song.id}
-              className="bg-card border-border hover:border-primary transition-all animate-slide-up p-6 group"
+              className="bg-card border-[hsl(var(--border))] hover:border-[hsl(var(--primary))] transition-all animate-slide-up p-6 group"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-center justify-between gap-4">
@@ -50,17 +50,17 @@ const Songs = () => {
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))] transition-colors"
                   >
                     <Play className="h-5 w-5" />
                   </Button>
                   
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-lg group-hover:text-[hsl(var(--primary))] transition-colors text-foreground">
                       {song.title}
                     </h3>
                     {song.featured && (
-                      <span className="text-xs text-primary">Featured Track</span>
+                      <span className="text-xs text-[hsl(var(--primary))]">Featured Track</span>
                     )}
                   </div>
                 </div>

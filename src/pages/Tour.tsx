@@ -42,9 +42,9 @@ const Tour = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20">
+    <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-20 bg-background">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl lg:text-6xl font-bold mb-4 animate-fade-in">Tour Dates</h1>
+        <h1 className="text-4xl lg:text-6xl font-bold mb-4 animate-fade-in text-foreground">Tour Dates</h1>
         <p className="text-muted-foreground mb-12 text-lg animate-fade-in">
           Join us live for an unforgettable musical experience
         </p>
@@ -53,18 +53,18 @@ const Tour = () => {
           {shows.map((show, index) => (
             <Card
               key={show.id}
-              className="bg-card border-border hover:border-primary transition-all p-6 animate-slide-up"
+              className="bg-card border-[hsl(var(--border))] hover:border-[hsl(var(--primary))] transition-all p-6 animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-3 flex-1">
-                  <div className="flex items-center gap-2 text-primary">
+                  <div className="flex items-center gap-2 text-[hsl(var(--primary))]">
                     <Calendar className="h-4 w-4" />
                     <span className="font-semibold">{show.date}</span>
                   </div>
                   
                   <div>
-                    <h3 className="text-xl font-bold mb-1">{show.venue}</h3>
+                    <h3 className="text-xl font-bold mb-1 text-foreground">{show.venue}</h3>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <MapPin className="h-4 w-4" />
                       <span>{show.city}</span>
@@ -77,7 +77,7 @@ const Tour = () => {
                   className={
                     show.status === "soldout"
                       ? "bg-muted text-muted-foreground cursor-not-allowed"
-                      : "bg-primary hover:bg-primary/90"
+                      : "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
                   }
                   disabled={show.status === "soldout"}
                 >
@@ -88,12 +88,15 @@ const Tour = () => {
           ))}
         </div>
 
-        <Card className="mt-12 bg-card border-primary/50 p-8 animate-fade-in text-center">
-          <h2 className="text-2xl font-bold mb-4">Stay Updated</h2>
+        <Card className="mt-12 bg-card border-[hsl(var(--primary))]/50 p-8 animate-fade-in text-center">
+          <h2 className="text-2xl font-bold mb-4 text-foreground">Stay Updated</h2>
           <p className="text-muted-foreground mb-6">
             Sign up to receive notifications about new tour dates and exclusive presale access
           </p>
-          <Button size="lg" className="bg-primary hover:bg-primary/90">
+          <Button 
+            size="lg" 
+            className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
+          >
             Subscribe to Newsletter
           </Button>
         </Card>

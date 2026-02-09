@@ -88,11 +88,11 @@ const PaymentCallback = () => {
   const renderIcon = () => {
     switch (status) {
       case "loading":
-        return <Loader2 className="h-16 w-16 animate-spin text-primary" />;
+        return <Loader2 className="h-16 w-16 animate-spin text-[hsl(var(--primary))]" />;
       case "success":
         return <CheckCircle className="h-16 w-16 text-green-500" />;
       case "failed":
-        return <XCircle className="h-16 w-16 text-destructive" />;
+        return <XCircle className="h-16 w-16 text-[hsl(var(--destructive))]" />;
       case "pending":
         return <Clock className="h-16 w-16 text-yellow-500" />;
     }
@@ -113,11 +113,11 @@ const PaymentCallback = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-20 flex items-center justify-center min-h-[70vh]">
-        <Card className="w-full max-w-md p-8 bg-card border-border text-center">
+      <div className="container mx-auto px-4 py-20 flex items-center justify-center min-h-[70vh] bg-background">
+        <Card className="w-full max-w-md p-8 bg-card border-[hsl(var(--border))] text-center">
           <div className="flex justify-center mb-6">{renderIcon()}</div>
           
-          <h1 className="text-2xl font-bold mb-4">{renderTitle()}</h1>
+          <h1 className="text-2xl font-bold mb-4 text-foreground">{renderTitle()}</h1>
           
           <p className="text-muted-foreground mb-8">{message}</p>
 
@@ -125,14 +125,14 @@ const PaymentCallback = () => {
             <div className="space-y-4">
               <Button
                 onClick={() => navigate("/album")}
-                className="w-full bg-[#895B26] hover:bg-[#895B26]/90"
+                className="w-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
               >
                 Listen Now
               </Button>
               <Button
                 variant="outline"
                 onClick={() => navigate("/")}
-                className="w-full"
+                className="w-full border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] hover:text-foreground"
               >
                 Go Home
               </Button>
@@ -143,14 +143,14 @@ const PaymentCallback = () => {
             <div className="space-y-4">
               <Button
                 onClick={() => navigate(-1)}
-                className="w-full bg-[#895B26] hover:bg-[#895B26]/90"
+                className="w-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
               >
                 Try Again
               </Button>
               <Button
                 variant="outline"
                 onClick={() => navigate("/")}
-                className="w-full"
+                className="w-full border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] hover:text-foreground"
               >
                 Go Home
               </Button>
@@ -161,14 +161,14 @@ const PaymentCallback = () => {
             <div className="space-y-4">
               <Button
                 onClick={() => window.location.reload()}
-                className="w-full bg-[#895B26] hover:bg-[#895B26]/90"
+                className="w-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
               >
                 Check Again
               </Button>
               <Button
                 variant="outline"
                 onClick={() => navigate("/")}
-                className="w-full"
+                className="w-full border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] hover:text-foreground"
               >
                 Go Home
               </Button>

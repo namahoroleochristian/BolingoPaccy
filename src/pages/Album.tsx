@@ -226,7 +226,7 @@ const Album = () => {
                 variant="outline"
                 size="sm"
                 onClick={handlePreviousAlbum}
-                className="border-border hover:bg-accent"
+                className="border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))]"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 <span className="hidden sm:inline">Previous</span>
@@ -242,7 +242,7 @@ const Album = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleNextAlbum}
-                className="border-border hover:bg-accent"
+                className="border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))]"
               >
                 <span className="hidden sm:inline">Next</span>
                 <ChevronRight className="h-4 w-4 ml-1" />
@@ -257,8 +257,8 @@ const Album = () => {
                   onClick={() => handleAlbumChange(album)}
                   className={`flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                     currentAlbum.id === album.id
-                      ? "bg-[#895B26] text-white"
-                      : "bg-card border border-border text-foreground hover:bg-accent"
+                      ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
+                      : "bg-card border border-[hsl(var(--border))] text-foreground hover:bg-[hsl(var(--accent))]"
                   }`}
                 >
                   {album.title}
@@ -270,7 +270,7 @@ const Album = () => {
 
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
           {/* Album Cover */}
-          <Card className="overflow-hidden bg-card border-border">
+          <Card className="overflow-hidden bg-card border-[hsl(var(--border))]">
             <img
               src={currentAlbum.cover_url || albumCover}
               alt={currentAlbum.title}
@@ -281,7 +281,7 @@ const Album = () => {
           {/* Album Info */}
           <div className="space-y-4 sm:space-y-6">
             <div>
-              <p className="text-xs sm:text-sm uppercase tracking-wider text-[#895B26] mb-2">
+              <p className="text-xs sm:text-sm uppercase tracking-wider text-[hsl(var(--primary))] mb-2">
                 Album
               </p>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-foreground">
@@ -306,7 +306,7 @@ const Album = () => {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               {hasPurchased ? (
                 <Button
-                  className="flex-1 bg-[#895B26] hover:bg-[#895B26]/90 text-white font-semibold"
+                  className="flex-1 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))] font-semibold"
                   disabled
                 >
                   <Unlock className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -315,7 +315,7 @@ const Album = () => {
               ) : (
                 <Button
                   onClick={handleBuyNow}
-                  className="flex-1 bg-[#895B26] hover:bg-[#895B26]/90 text-white font-semibold"
+                  className="flex-1 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))] font-semibold"
                 >
                   <ShoppingCart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Buy Now
@@ -323,7 +323,7 @@ const Album = () => {
               )}
               <Button
                 variant="outline"
-                className="flex-1 border-border hover:bg-accent"
+                className="flex-1 border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))]"
               >
                 <Music className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Add to Library
@@ -332,23 +332,23 @@ const Album = () => {
 
             {/* Purchase Status Indicator */}
             {hasPurchased && (
-              <Card className="bg-[#895B26]/10 border-[#895B26]/30 p-3 sm:p-4">
-                <p className="text-[#895B26] text-xs sm:text-sm font-medium">
+              <Card className="bg-[hsl(var(--primary))]/10 border-[hsl(var(--primary))]/30 p-3 sm:p-4">
+                <p className="text-[hsl(var(--primary))] text-xs sm:text-sm font-medium">
                   ✓ You own this album - All tracks are unlocked
                 </p>
               </Card>
             )}
 
             {!hasPurchased && user && (
-              <Card className="bg-destructive/10 border-destructive/30 p-3 sm:p-4">
-                <p className="text-destructive text-xs sm:text-sm font-medium">
+              <Card className="bg-[hsl(var(--destructive))]/10 border-[hsl(var(--destructive))]/30 p-3 sm:p-4">
+                <p className="text-[hsl(var(--destructive))] text-xs sm:text-sm font-medium">
                   🔒 Purchase this album to unlock all tracks
                 </p>
               </Card>
             )}
 
             {!user && (
-              <Card className="bg-muted border-border p-3 sm:p-4">
+              <Card className="bg-muted border-[hsl(var(--border))] p-3 sm:p-4">
                 <p className="text-muted-foreground text-xs sm:text-sm font-medium">
                   ℹ️ Log in to purchase and access full tracks
                 </p>
@@ -358,7 +358,7 @@ const Album = () => {
         </div>
 
         {/* Track List */}
-        <Card className="bg-card border-border p-4 sm:p-6">
+        <Card className="bg-card border-[hsl(var(--border))] p-4 sm:p-6">
           <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-4 sm:mb-6">Tracklist</h2>
           <div className="space-y-2">
             {songs.map((track) => {
@@ -371,8 +371,8 @@ const Album = () => {
                   className={`flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-lg transition-all ${
                     isLocked
                       ? "bg-muted/50 cursor-not-allowed opacity-60"
-                      : "bg-accent/50 hover:bg-accent cursor-pointer"
-                  } ${isPlaying ? "bg-[#895B26]/20 ring-2 ring-[#895B26]" : ""}`}
+                      : "bg-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))] cursor-pointer"
+                  } ${isPlaying ? "bg-[hsl(var(--primary))]/20 ring-2 ring-[hsl(var(--primary))]" : ""}`}
                   onClick={() => handlePlayTrack(track)}
                 >
                   <span className="text-muted-foreground w-6 sm:w-8 text-center text-sm">
@@ -385,8 +385,8 @@ const Album = () => {
                       isLocked
                         ? "bg-muted text-muted-foreground"
                         : isPlaying
-                        ? "bg-[#895B26] hover:bg-[#895B26]/90 text-white"
-                        : "bg-[#895B26] hover:bg-[#895B26]/90 text-white"
+                        ? "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
+                        : "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -406,7 +406,7 @@ const Album = () => {
                       {track.title}
                     </p>
                     {track.is_preview && !hasPurchased && (
-                      <span className="text-xs text-[#895B26]">(Preview)</span>
+                      <span className="text-xs text-[hsl(var(--primary))]">(Preview)</span>
                     )}
                   </div>
                   <span className={`text-xs sm:text-sm flex-shrink-0 ${isLocked ? "text-muted-foreground/60" : "text-muted-foreground"}`}>

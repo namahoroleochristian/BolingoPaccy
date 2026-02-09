@@ -111,19 +111,23 @@ const Auth = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[80vh]">
-        <Card className="w-full max-w-md p-8 bg-card border-border">
-          <h1 className="text-3xl font-bold text-center mb-8">Welcome</h1>
+        <Card className="w-full max-w-md p-8 bg-card border-[hsl(var(--border))]">
+          <h1 className="text-3xl font-bold text-center mb-8 text-foreground">Welcome</h1>
           
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-muted">
+              <TabsTrigger value="signin" className="data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-[hsl(var(--primary-foreground))]">
+                Sign In
+              </TabsTrigger>
+              <TabsTrigger value="signup" className="data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-[hsl(var(--primary-foreground))]">
+                Sign Up
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
+                  <Label htmlFor="signin-email" className="text-foreground">Email</Label>
                   <Input
                     id="signin-email"
                     type="email"
@@ -131,14 +135,15 @@ const Auth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
+                    className="bg-card border-[hsl(var(--border))] text-foreground"
                   />
                   {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email}</p>
+                    <p className="text-sm text-[hsl(var(--destructive))]">{errors.email}</p>
                   )}
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
+                  <Label htmlFor="signin-password" className="text-foreground">Password</Label>
                   <Input
                     id="signin-password"
                     type="password"
@@ -146,15 +151,16 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
+                    className="bg-card border-[hsl(var(--border))] text-foreground"
                   />
                   {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password}</p>
+                    <p className="text-sm text-[hsl(var(--destructive))]">{errors.password}</p>
                   )}
                 </div>
                 
                 <Button
                   type="submit"
-                  className="w-full bg-[#895B26] hover:bg-[#895B26]/90"
+                  className="w-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Sign In"}
@@ -166,27 +172,29 @@ const Auth = () => {
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName" className="text-foreground">First Name</Label>
                     <Input
                       id="firstName"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="John"
+                      className="bg-card border-[hsl(var(--border))] text-foreground"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-foreground">Last Name</Label>
                     <Input
                       id="lastName"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Doe"
+                      className="bg-card border-[hsl(var(--border))] text-foreground"
                     />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email" className="text-foreground">Email</Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -194,14 +202,15 @@ const Auth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
+                    className="bg-card border-[hsl(var(--border))] text-foreground"
                   />
                   {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email}</p>
+                    <p className="text-sm text-[hsl(var(--destructive))]">{errors.email}</p>
                   )}
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password" className="text-foreground">Password</Label>
                   <Input
                     id="signup-password"
                     type="password"
@@ -209,15 +218,16 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
+                    className="bg-card border-[hsl(var(--border))] text-foreground"
                   />
                   {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password}</p>
+                    <p className="text-sm text-[hsl(var(--destructive))]">{errors.password}</p>
                   )}
                 </div>
                 
                 <Button
                   type="submit"
-                  className="w-full bg-[#895B26] hover:bg-[#895B26]/90"
+                  className="w-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
                   disabled={loading}
                 >
                   {loading ? "Creating account..." : "Create Account"}

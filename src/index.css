@@ -2,67 +2,329 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Fascinate&display=swap');
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
+.fascinate-regular {
+  font-family: "Fascinate", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
+    font-family:Fascinate;
+    /* 60% - #f0f0f0 - Light Gray (Dominant background) */
+    --background: 0 0% 94%; /* hsl(0, 0%, 94%) */
+    --foreground: 0 0% 15%; /* Darker gray for better contrast */
 
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 98%;
+    /* 30% - #cfcfcf - Medium Gray (Secondary surfaces) */
+    --card: 0 0% 81%; /* hsl(0, 0%, 81%) */
+    --card-foreground: 0 0% 15%; /* Dark text */
+    
+    --popover: 0 0% 81%;
+    --popover-foreground: 0 0% 15%;
 
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 98%;
+    /* 10% - STRONG Cool Gray-Blue (Enhanced from #c2c5cc) */
+    --primary: 215 70% 55%; /* hsl(215, 70%, 55%) - Much stronger blue! */
+    --primary-foreground: 0 0% 98%; /* White text on blue buttons */
 
-    --primary: 30 38% 48%;
-    --primary-foreground: 0 0% 98%;
+    /* Supporting colors (variations) */
+    --secondary: 0 0% 75%; /* Slightly darker gray */
+    --secondary-foreground: 0 0% 15%;
 
-    --secondary: 30 25% 35%;
-    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 87%; /* Between background and card */
+    --muted-foreground: 0 0% 45%; /* Medium gray text */
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
-
-    --accent: 30 38% 48%;
+    --accent: 215 60% 50%; /* Strong blue accent */
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 30 38% 48%;
+    /* Borders */
+    --border: 0 0% 85%; /* Slightly darker than card */
+    --input: 0 0% 90%;
+    --ring: 215 70% 55%; /* Strong blue focus rings */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 30 25% 35%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 30 38% 48%;
+    /* Sidebar - variation */
+    --sidebar-background: 0 0% 78%; /* Slightly darker than card */
+    --sidebar-foreground: 0 0% 15%;
+    --sidebar-primary: 215 70% 55%; /* Strong blue */
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 30 30% 40%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 30%;
-    --sidebar-ring: 30 38% 48%;
+    --sidebar-accent: 0 0% 72%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 0 0% 70%;
+    --sidebar-ring: 215 70% 55%;
 
-    --gold: 45 80% 60%;
-    --tan: 30 38% 70%;
-    --brown-dark: 30 25% 25%;
+    /* Additional accent colors */
+    --gold: 45 100% 55%; /* Brighter gold */
+    --tan: 30 50% 80%;
+    --brown-dark: 0 0% 30%;
     
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
+/* Custom styles with strong blue accents */
+@layer components {
+  .card {
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    transition: var(--transition-smooth);
+  }
+  
+  .card-hover:hover {
+    background-color: hsl(var(--secondary));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-accent {
+    border-left: 4px solid hsl(var(--primary));
+  }
+  
+  .btn-primary {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-weight: 600;
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius);
+    border: none;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-primary:hover {
+    background-color: hsl(215, 70%, 50%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.3);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-primary:hover::after {
+    left: 100%;
+  }
+  
+  .btn-outline {
+    background-color: transparent;
+    color: hsl(var(--foreground));
+    border: 2px solid hsl(var(--border));
+    font-weight: 500;
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius);
+    transition: var(--transition-smooth);
+  }
+  
+  .btn-outline:hover {
+    background-color: hsl(var(--muted));
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+  
+  /* Strong text accents */
+  .text-accent {
+    color: hsl(var(--primary));
+  }
+  
+  .text-accent-bold {
+    color: hsl(var(--primary));
+    font-weight: 700;
+  }
+  
+  /* Border accents */
+  .border-accent {
+    border-color: hsl(var(--primary));
+  }
+  
+  .border-accent-thick {
+    border: 2px solid hsl(var(--primary));
+  }
+  
+  /* Background accents */
+  .bg-accent-subtle {
+    background-color: rgba(33, 150, 243, 0.08);
+  }
+  
+  .bg-accent-strong {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+  
+  /* Input focus with strong blue */
+  .input {
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    transition: var(--transition-smooth);
+    font-size: 0.95rem;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15);
+  }
+  
+  /* Link styles */
+  .link {
+    color: hsl(var(--primary));
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+    border-bottom: 1px solid transparent;
+  }
+  
+  .link:hover {
+    border-bottom-color: hsl(var(--primary));
+  }
+  
+  /* Progress/loading bars */
+  .progress-bar {
+    background-color: hsl(var(--border));
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    background-color: hsl(var(--primary));
+    height: 100%;
+    border-radius: var(--radius);
+    transition: width 0.3s ease;
+  }
+  
+  /* Badge with strong blue */
+  .badge {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    letter-spacing: 0.025em;
+  }
+  
+  .badge-outline {
+    background-color: transparent;
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary));
+  }
+}
 
+/* Enhanced scrollbar with blue accent */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 5px;
+  border: 2px solid hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(215, 70%, 50%);
+}
+
+/* Strong blue selection */
+::selection {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+/* Focus with strong blue outline */
+:focus-visible {
+  outline: 3px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Typography with blue accents */
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+/* Gradient effects */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(190, 80%, 55%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-border {
+  border: 2px solid transparent;
+  background: linear-gradient(hsl(var(--background)), hsl(var(--background))) padding-box,
+              linear-gradient(135deg, hsl(var(--primary)), hsl(190, 80%, 55%)) border-box;
+}
+
+/* Shadow with blue tint */
+.shadow-blue {
+  box-shadow: 0 4px 14px rgba(33, 150, 243, 0.15);
+}
+
+/* Animation for blue elements */
+@keyframes pulse-blue {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.pulse-blue {
+  animation: pulse-blue 2s ease-in-out infinite;
+}

@@ -44,7 +44,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 lg:px-8 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 lg:px-8 py-12 bg-background">
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Album Cover */}
@@ -55,7 +55,7 @@ const Home = () => {
               </div>
               
               <div className="relative bg-card rounded-lg overflow-hidden shadow-2xl">
-                <div className="p-6 lg:p-8 bg-[black]">
+                <div className="p-6 lg:p-8 bg-card">
                   <img
                     src={albumCover}
                     alt="Umucancuro Album Cover"
@@ -79,7 +79,7 @@ const Home = () => {
             </p>
 
             {album && (
-              <p className="text-2xl font-bold text-[#895B26]">
+              <p className="text-2xl font-bold text-[hsl(var(--primary))]">
                 {album.currency} {album.price.toFixed(2)}
               </p>
             )}
@@ -87,7 +87,7 @@ const Home = () => {
             <div className="flex flex-wrap gap-4">
               <Button 
                 size="lg"
-                className="bg-[#895B26] hover:bg-[#895B26]/90 text-primary-foreground px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition duration-300 hover:scale-105"
+                className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))] px-8 lg:px-12 py-6 text-base lg:text-lg font-semibold rounded-lg transition duration-300 hover:scale-105"
                 onClick={handleBuyNow}
               >
                 BUY NOW
@@ -97,7 +97,7 @@ const Home = () => {
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="px-8 py-6 text-base lg:text-lg"
+                  className="px-8 py-6 text-base lg:text-lg border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] hover:text-foreground"
                   onClick={() => navigate("/auth")}
                 >
                   Sign In
