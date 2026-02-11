@@ -40,51 +40,36 @@ const Album = () => {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
-  const [playbackRate, setPlaybackRate] = useState(1);
   
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Prevent context menu (right-click) on audio player
-  useEffect(() => {
-    const handleContextMenu = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).tagName === 'AUDIO') {
-        e.preventDefault();
-        return false;
-      }
-    };
-
-    document.addEventListener('contextmenu', handleContextMenu);
-    return () => document.removeEventListener('contextmenu', handleContextMenu);
-  }, []);
-
-  // Prevent keyboard shortcuts for saving
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Prevent Ctrl+S, Ctrl+Shift+S, Ctrl+U, etc.
-      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'u')) {
-        e.preventDefault();
-        toast({
-          title: "Download Restricted",
-          description: "Audio downloads are not available.",
-          variant: "destructive",
-        });
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toast]);
-
   // Initialize audio element
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-      audioRef.current.playbackRate = playbackRate;
-    }
-  }, [volume, playbackRate]);
+    audioRef.current = new Audio();
+    audioRef.current.preload = "metadata";
+    audioRef.current.controls = false;
+    
+    // Security attributes
+    audioRef.current.controlsList = "nodownload noplaybackrate nofullscreen";
+    (audioRef.current as any).disablePictureInPicture = true;
+    
+    // Event listeners
+    audioRef.current.addEventListener("loadedmetadata", handleAudioLoaded);
+    audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
+    audioRef.current.addEventListener("ended", handleAudioEnded);
+    audioRef.current.addEventListener("error", handleAudioError);
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   // Fetch all albums on mount
   useEffect(() => {
@@ -160,12 +145,7 @@ const Album = () => {
     };
 
     fetchAlbumData();
-    setCurrentlyPlaying(null);
-    setIsPlaying(false);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
+    stopAudio();
   }, [currentAlbum, user, toast]);
 
   const handleAlbumChange = (album: Album) => {
@@ -203,7 +183,7 @@ const Album = () => {
     navigate(`/checkout?album=${currentAlbum.id}`);
   };
 
-  const handlePlayTrack = (song: Song) => {
+  const handlePlayTrack = async (song: Song) => {
     if (!hasPurchased && !song.is_preview) {
       toast({
         title: "Purchase Required",
@@ -213,34 +193,65 @@ const Album = () => {
       return;
     }
 
-    if (currentlyPlaying === song.id) {
-      // Toggle play/pause for current track
-      if (audioRef.current) {
-        if (isPlaying) {
-          audioRef.current.pause();
-        } else {
-          audioRef.current.play().catch(console.error);
-        }
-        setIsPlaying(!isPlaying);
+    // If clicking the same track, toggle play/pause
+    if (currentlyPlaying === song.id && audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+        toast({
+          title: "Paused",
+          description: song.title,
+        });
+      } else {
+        audioRef.current.play().catch(error => {
+          console.error("Error resuming audio:", error);
+          handlePlaybackError(song);
+        });
+        setIsPlaying(true);
+        toast({
+          title: "Resumed",
+          description: song.title,
+        });
       }
-    } else {
-      // Play new track
-      setCurrentlyPlaying(song.id);
-      setIsPlaying(true);
-      
-      if (audioRef.current && song.audio_url) {
+      return;
+    }
+
+    // Stop any currently playing audio
+    stopAudio();
+
+    // Set new track as currently playing
+    setCurrentlyPlaying(song.id);
+    setIsPlaying(true);
+    
+    if (!song.audio_url) {
+      toast({
+        title: "Playback Error",
+        description: "No audio URL found for this track.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (audioRef.current) {
+      try {
+        // Clear previous source
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        
+        // Set new source
         audioRef.current.src = song.audio_url;
-        audioRef.current.load();
+        audioRef.current.volume = volume;
         
-        // Set metadata to prevent download
-        audioRef.current.preload = "metadata";
-        
-        audioRef.current.play().catch(console.error);
+        // Play audio
+        await audioRef.current.play();
         
         toast({
           title: "Now Playing",
           description: `${song.title}${hasPurchased ? ' (Full Version)' : ' (Preview)'}`,
         });
+      } catch (error) {
+        console.error("Audio play error:", error);
+        handlePlaybackError(song);
       }
     }
   };
@@ -257,8 +268,45 @@ const Album = () => {
     }
   };
 
-  const handleSeek = (value: number[]) => {
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+    handleNextTrack();
+  };
+
+  const handleAudioError = (e: Event) => {
+    console.error("Audio element error:", e);
+    setIsPlaying(false);
+    
+    const currentSong = songs.find(s => s.id === currentlyPlaying);
+    if (currentSong) {
+      toast({
+        title: "Playback Error",
+        description: `Could not play "${currentSong.title}". Please check your internet connection.`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePlaybackError = (song: Song) => {
+    setIsPlaying(false);
+    toast({
+      title: "Playback Error",
+      description: `Could not play "${song.title}". Please try again.`,
+      variant: "destructive",
+    });
+  };
+
+  const stopAudio = () => {
     if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setCurrentlyPlaying(null);
+    setIsPlaying(false);
+  };
+
+  const handleSeek = (value: number[]) => {
+    if (audioRef.current && !isNaN(value[0])) {
       audioRef.current.currentTime = value[0];
       setCurrentTime(value[0]);
     }
@@ -286,13 +334,10 @@ const Album = () => {
   };
 
   const formatTime = (seconds: number) => {
+    if (isNaN(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
-
-  const handlePlaybackRateChange = (rate: number) => {
-    setPlaybackRate(rate);
   };
 
   const handleNextTrack = () => {
@@ -302,7 +347,6 @@ const Album = () => {
     const nextIndex = (currentIndex + 1) % songs.length;
     const nextSong = songs[nextIndex];
     
-    // Check if user can play the next track
     if (!hasPurchased && !nextSong.is_preview) {
       toast({
         title: "Track Locked",
@@ -322,7 +366,6 @@ const Album = () => {
     const prevIndex = currentIndex > 0 ? currentIndex - 1 : songs.length - 1;
     const prevSong = songs[prevIndex];
     
-    // Check if user can play the previous track
     if (!hasPurchased && !prevSong.is_preview) {
       toast({
         title: "Track Locked",
@@ -364,26 +407,6 @@ const Album = () => {
   return (
     <div className="min-h-screen bg-background py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        {/* Hidden audio element with security measures */}
-        <audio
-          ref={audioRef}
-          onLoadedMetadata={handleAudioLoaded}
-          onTimeUpdate={handleTimeUpdate}
-          onEnded={handleNextTrack}
-          onError={(e) => {
-            console.error("Audio playback error:", e);
-            toast({
-              title: "Playback Error",
-              description: "Unable to play the audio track.",
-              variant: "destructive",
-            });
-          }}
-          // Security attributes to prevent download
-          controlsList="nodownload noplaybackrate nofullscreen"
-          disablePictureInPicture
-          style={{ display: 'none' }}
-        />
-
         {/* Floating Audio Player */}
         {currentlyPlaying && currentSong && (
           <Card className="fixed bottom-4 left-4 right-4 md:left-8 md:right-8 lg:left-auto lg:right-auto lg:bottom-8 lg:w-96 lg:left-1/2 lg:transform lg:-translate-x-1/2 bg-card border-2 border-[hsl(var(--primary))]/30 shadow-lg z-50">
@@ -398,14 +421,7 @@ const Album = () => {
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => {
-                    setIsPlaying(false);
-                    setCurrentlyPlaying(null);
-                    if (audioRef.current) {
-                      audioRef.current.pause();
-                      audioRef.current.currentTime = 0;
-                    }
-                  }}
+                  onClick={stopAudio}
                 >
                   ×
                 </Button>
@@ -463,43 +479,26 @@ const Album = () => {
                   </Button>
                 </div>
 
-                <div className="flex items-center space-x-4">
-                  {/* Playback Speed */}
-                  <div className="flex items-center space-x-1">
-                    {[0.75, 1, 1.25, 1.5].map(rate => (
-                      <Button
-                        key={rate}
-                        variant="ghost"
-                        size="sm"
-                        className={`h-6 px-2 ${playbackRate === rate ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : ''}`}
-                        onClick={() => handlePlaybackRateChange(rate)}
-                      >
-                        {rate}x
-                      </Button>
-                    ))}
-                  </div>
-
-                  {/* Volume Control */}
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={toggleMute}
-                    >
-                      {isMuted ? (
-                        <VolumeX className="h-4 w-4" />
-                      ) : (
-                        <Volume2 className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <Slider
-                      value={[isMuted ? 0 : volume]}
-                      max={1}
-                      step={0.01}
-                      onValueChange={handleVolumeChange}
-                      className="w-20 cursor-pointer"
-                    />
-                  </div>
+                {/* Volume Control */}
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleMute}
+                  >
+                    {isMuted ? (
+                      <VolumeX className="h-4 w-4" />
+                    ) : (
+                      <Volume2 className="h-4 w-4" />
+                    )}
+                  </Button>
+                  <Slider
+                    value={[isMuted ? 0 : volume]}
+                    max={1}
+                    step={0.01}
+                    onValueChange={handleVolumeChange}
+                    className="w-20 cursor-pointer"
+                  />
                 </div>
               </div>
 
@@ -513,7 +512,7 @@ const Album = () => {
           </Card>
         )}
 
-        {/* Rest of your existing component remains the same */}
+        {/* Rest of your UI remains the same... */}
         {albums.length > 1 && (
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
@@ -654,7 +653,7 @@ const Album = () => {
           <div className="space-y-2">
             {songs.map((track) => {
               const isLocked = !hasPurchased && !track.is_preview;
-              const isPlaying = currentlyPlaying === track.id;
+              const isTrackPlaying = currentlyPlaying === track.id;
 
               return (
                 <div
@@ -663,8 +662,8 @@ const Album = () => {
                     isLocked
                       ? "bg-muted/50 cursor-not-allowed opacity-60"
                       : "bg-[hsl(var(--accent))]/50 hover:bg-[hsl(var(--accent))] cursor-pointer"
-                  } ${isPlaying ? "bg-[hsl(var(--primary))]/20 ring-2 ring-[hsl(var(--primary))]" : ""}`}
-                  onClick={() => handlePlayTrack(track)}
+                  } ${isTrackPlaying ? "bg-[hsl(var(--primary))]/20 ring-2 ring-[hsl(var(--primary))]" : ""}`}
+                  onClick={() => !isLocked && handlePlayTrack(track)}
                 >
                   <span className="text-muted-foreground w-6 sm:w-8 text-center text-sm">
                     {track.track_number}
@@ -675,18 +674,19 @@ const Album = () => {
                     className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full flex-shrink-0 ${
                       isLocked
                         ? "bg-muted text-muted-foreground"
-                        : isPlaying
+                        : isTrackPlaying && isPlaying
                         ? "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
                         : "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))]"
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handlePlayTrack(track);
+                      if (!isLocked) handlePlayTrack(track);
                     }}
+                    disabled={isLocked}
                   >
                     {isLocked ? (
                       <Lock className="h-3 w-3 sm:h-4 sm:w-4" />
-                    ) : isPlaying ? (
+                    ) : isTrackPlaying && isPlaying ? (
                       <Pause className="h-3 w-3 sm:h-4 sm:w-4" />
                     ) : (
                       <Play className="h-3 w-3 sm:h-4 sm:w-4" />

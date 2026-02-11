@@ -328,3 +328,207 @@ h3 {
 .pulse-blue {
   animation: pulse-blue 2s ease-in-out infinite;
 }
+
+/* SocialPlatforms.css */
+.social-platforms-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.social-platforms-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.social-platforms-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.social-platforms-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.social-platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.social-platform-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-platform-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--platform-color, #6366f1);
+  transition: height 0.3s ease;
+}
+
+.social-platform-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border-color: var(--platform-color, #6366f1);
+}
+
+.social-platform-card:hover::before {
+  height: 6px;
+}
+
+.platform-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.social-platform-card:hover .platform-icon {
+  transform: scale(1.1);
+}
+
+.icon-emoji {
+  font-size: 28px;
+}
+
+.platform-content {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.platform-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.platform-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.visit-button {
+  background: var(--platform-color, #6366f1);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: auto;
+}
+
+.visit-button:hover {
+  opacity: 0.9;
+  transform: translateX(2px);
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+}
+
+.visit-button:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .social-platforms-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .social-platforms-container {
+    padding: 1.5rem;
+  }
+  
+  .social-platforms-title {
+    font-size: 2rem;
+  }
+  
+  .social-platforms-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    padding: 0;
+  }
+  
+  .social-platform-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .social-platforms-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .social-platforms-title {
+    font-size: 1.75rem;
+  }
+  
+  .social-platforms-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .social-platforms-container {
+    padding: 1rem;
+  }
+  
+  .social-platform-card {
+    padding: 1rem;
+  }
+  
+  .platform-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .icon-emoji {
+    font-size: 24px;
+  }
+  
+  .platform-name {
+    font-size: 1.25rem;
+  }
+}

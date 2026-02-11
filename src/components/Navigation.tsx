@@ -241,7 +241,7 @@ const Navigation = () => {
     { path: "/album", label: "Album" },
     { path: "/gallery", label: "Gallery" },
     { path: "/songs", label: "Songs" },
-    { path: "/tour", label: "Tour" },
+    { path: "/events", label: "Events" },
   ];
 
   // Add premium link if user has purchased the specific album
